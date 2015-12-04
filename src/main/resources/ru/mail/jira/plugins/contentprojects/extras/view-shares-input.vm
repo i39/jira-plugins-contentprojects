@@ -29,13 +29,13 @@
             <form class="aui" action="ContentProjectsViewShares.jspa" method="post">
                 <input type="hidden" name="atl_token" value="$atl_token" />
                 <div class="field-group">
-                    <label for="contentprojects-url-id">$i18n.getText('ru.mail.jira.plugins.contentprojects.extras.viewShares.links')</label>
+                    <label for="contentprojects-url-id">$i18n.getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.links")</label>
                     <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url-id"></textarea>
                     <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.placeholder")</div>
                     #fieldError( "urls" )
                 </div>
                 <div class="buttons-container">
-                    <button id="contentprojects-btn-get" class="aui-button aui-button-link">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
+                    <button id="contentprojects-btn-get" class="aui-button">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
                 </div>
             </form>
         </section>
