@@ -1,0 +1,68 @@
+<html>
+<head>
+    <title>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</title>
+    <meta name="decorator" content="general"/>
+    <style>
+        .url-column {
+            width: 300px;
+        }
+    </style>
+</head>
+<body class="aui-page-focused aui-page-focused-large">
+<div id="page">
+    <section id="content" role="main">
+        <header class="aui-page-header">
+            <div class="aui-page-header-inner">
+                <div class="aui-page-header-main">
+                    <h1>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</h1>
+                </div>
+            </div>
+        </header>
+        <div class="aui-page-panel">
+            <div class="aui-page-panel-inner">
+                <section class="aui-page-panel-content">
+                    <table class="aui">
+                        <thead>
+                        <tr>
+                            <th class="url-column">$i18n.getText('remotelink.service.url')</th>
+                            <th>$i18n.getText('common.words.total')</th>
+                            <th>Facebook</th>
+                            <th>MyMail</th>
+                            <th>OK</th>
+                            <th>Twitter</th>
+                            <th>VK</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            #foreach( $shares in $action.sharesArray )
+                            <tr>
+                                <td>$shares.url</td>
+                                <td>$shares.total</td>
+                                <td>$shares.facebook</td>
+                                <td>$shares.mymail</td>
+                                <td>$shares.odnoklassniki</td>
+                                <td>$shares.twitter</td>
+                                <td>$shares.vkontakte</td>
+                            </tr>
+                            #end
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            #set( $total = $action.sharesTotal )
+                            <td></td>
+                            <td>$total.total</td>
+                            <td>$total.facebook</td>
+                            <td>$total.mymail</td>
+                            <td>$total.odnoklassniki</td>
+                            <td>$total.twitter</td>
+                            <td>$total.vkontakte</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

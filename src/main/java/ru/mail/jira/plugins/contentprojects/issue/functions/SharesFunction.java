@@ -41,7 +41,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
     }
 
-    private int getSharesFacebook(String ... urls) throws Exception {
+    private static int getSharesFacebook(String ... urls) throws Exception {
         String response = new HttpSender("http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=%s", StringUtils.join(urls, ",")).sendGet();
         JSONArray json = new JSONArray(response);
         int result = 0;
@@ -50,7 +50,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return result;
     }
 
-    private int getSharesMymail(String ... urls) throws Exception {
+    private static int getSharesMymail(String ... urls) throws Exception {
         String response = new HttpSender("https://connect.mail.ru/share_count?url_list=%s", StringUtils.join(urls, ",")).sendGet();
         JSONObject json = new JSONObject(response);
         int result = 0;
@@ -60,7 +60,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return result;
     }
 
-    private int getSharesOdnoklassniki(String url) throws Exception {
+    private static int getSharesOdnoklassniki(String url) throws Exception {
         String response = new HttpSender("http://connect.ok.ru/dk/?st.cmd=extLike&ref=%s&tp=json", url).sendGet();
         JSONObject json = new JSONObject(response);
         return json.getInt("count");
@@ -70,7 +70,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
      * To parse Twitter Json response used Jackson Streaming API.
      * This produces a smaller footprint in memory and the same performance with respect to time.
      */
-    private int getSharesTwitter(String url) throws Exception {
+    private static int getSharesTwitter(String url) throws Exception {
         String authResponse = new HttpSender("https://api.twitter.com/oauth2/token")
                 .setAuthenticationInfo(Consts.TWITTER_API_KEY, Consts.TWITTER_API_SECRET)
                 .setHeader("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
@@ -134,7 +134,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return count;
     }
 
-    private int getSharesVkontakte(String url) throws Exception {
+    private static int getSharesVkontakte(String url) throws Exception {
         int iteration = 0;
         while (iteration < 3)
             try {
@@ -150,7 +150,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return 0;
     }
 
-    private int[] getShares(String url) throws Exception {
+    public static int[] getShares(String url) throws Exception {
         String separator = url.contains("?") ? "&" : "?";
         int facebook = getSharesFacebook(url);
         int mymail = getSharesMymail(url, url + separator + "social=my");
@@ -193,37 +193,8 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return new RestExecutor<SharesOutput>() {
             @Override
             protected SharesOutput doAction() throws Exception {
-                return new SharesOutput(getShares(url));
+                return new SharesOutput(url, getShares(url));
             }
         }.getResponse();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @XmlRootElement
-    public static class SharesOutput {
-        @XmlElement
-        private double total;
-        @XmlElement
-        private double facebook;
-        @XmlElement
-        private double mymail;
-        @XmlElement
-        private double odnoklassniki;
-        @XmlElement
-        private double twitter;
-        @XmlElement
-        private double vkontakte;
-
-        private SharesOutput() {
-        }
-
-        public SharesOutput(int[] shares) {
-            this.total = shares[0] + shares[1] + shares[2] + shares[3] + shares[4];
-            this.facebook = shares[0];
-            this.mymail = shares[1];
-            this.odnoklassniki = shares[2];
-            this.twitter = shares[3];
-            this.vkontakte = shares[4];
-        }
     }
 }

@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</title>
+    <meta name="decorator" content="general"/>
+</head>
+<body class="aui-page-focused aui-page-size-large">
+<header class="aui-page-header">
+    <div class="aui-page-header-inner">
+        <div class="aui-page-header-main">
+            <h1>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title")</h1>
+        </div>
+    </div>
+</header>
+
+<div class="aui-page-panel">
+    <div class="aui-page-panel-inner">
+        <section id="contentprojects-shares" class="aui-page-panel-content">
+            #if( $action.hasErrorMessages )
+                <div class="aui-message aui-message-error">
+                    <span class="aui-icon icon-error"></span>
+                    #foreach( $errorMessage in $action.errorMessages )<p>$errorMessage</p>#end
+                </div>
+            #end
+            #macro( fieldError $name )
+                #if( $action.hasErrors && $action.errors.get( $name ) )
+                    <div class="error">$action.errors.get( $name )</div>
+                #end
+            #end
+            <form class="aui" action="ContentProjectsViewShares.jspa" method="post">
+                <input type="hidden" name="atl_token" value="$atl_token" />
+                <div class="field-group">
+                    <label for="contentprojects-url-id">$i18n.getText('ru.mail.jira.plugins.contentprojects.extras.viewShares.links')</label>
+                    <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url-id"></textarea>
+                    <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.placeholder")</div>
+                    #fieldError( "urls" )
+                </div>
+                <div class="buttons-container">
+                    <button id="contentprojects-btn-get" class="aui-button aui-button-link">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+</body>
+</html>
