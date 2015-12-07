@@ -193,7 +193,7 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return new RestExecutor<SharesOutput>() {
             @Override
             protected SharesOutput doAction() throws Exception {
-                return new SharesOutput(url, getShares(url));
+                return new SharesOutput(getShares(url));
             }
         }.getResponse();
     }

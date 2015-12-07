@@ -20,21 +20,28 @@ public class SharesOutput {
     @XmlElement
     private int vkontakte;
 
-    private SharesOutput() {
-    }
-
+    @Deprecated
+    /**
+     * Difficult to control parameters in array.
+     * You should use SharesOutput(String url, int facebook, int mymail, int ok, int twitter, int vkontakte) constructor.
+     */
     public SharesOutput(int[] shares) {
-        this(null, shares);
+        this(null, shares[0], shares[1], shares[2], shares[3], shares[4]);
     }
 
+    @Deprecated
     public SharesOutput(String url, int[] shares) {
+        this(url, shares[0], shares[1], shares[2], shares[3], shares[4]);
+    }
+
+    public SharesOutput(String url, int facebook, int mymail, int ok, int twitter, int vkontakte) {
         this.url = url;
-        this.total = shares[0] + shares[1] + shares[2] + shares[3] + shares[4];
-        this.facebook = shares[0];
-        this.mymail = shares[1];
-        this.odnoklassniki = shares[2];
-        this.twitter = shares[3];
-        this.vkontakte = shares[4];
+        this.total = facebook + mymail + ok + twitter + vkontakte;
+        this.facebook = facebook;
+        this.mymail = mymail;
+        this.odnoklassniki = ok;
+        this.twitter = twitter;
+        this.vkontakte = vkontakte;
     }
 
     public String getUrl() {

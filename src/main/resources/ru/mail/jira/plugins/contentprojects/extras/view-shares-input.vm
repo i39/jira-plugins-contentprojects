@@ -14,7 +14,7 @@
 
 <div class="aui-page-panel">
     <div class="aui-page-panel-inner">
-        <section id="contentprojects-shares" class="aui-page-panel-content">
+        <section class="aui-page-panel-content">
             #if( $action.hasErrorMessages )
                 <div class="aui-message aui-message-error">
                     <span class="aui-icon icon-error"></span>
@@ -31,11 +31,17 @@
                 <div class="field-group">
                     <label for="contentprojects-url-id">$i18n.getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.links")</label>
                     <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url-id"></textarea>
-                    <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.placeholder")</div>
+                    <div class="description">
+                        <ul>
+                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc1")</li>
+                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc2")</li>
+                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc3")</li>
+                        </ul>
+                    </div>
                     #fieldError( "urls" )
                 </div>
                 <div class="buttons-container">
-                    <button id="contentprojects-btn-get" class="aui-button">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
+                    <button class="aui-button">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
                 </div>
             </form>
         </section>

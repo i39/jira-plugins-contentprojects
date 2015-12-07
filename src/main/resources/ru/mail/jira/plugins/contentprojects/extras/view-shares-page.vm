@@ -18,15 +18,15 @@
                 <section class="aui-page-panel-content">
                     <table class="aui">
                         <thead>
-                        <tr>
-                            <th>$i18n.getText( "remotelink.service.url" )</th>
-                            <th><i>$i18n.getText( "common.words.total" )</i></th>
-                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.facebook" )</th>
-                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.mymail" )</th>
-                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.odnoklassniki" )</th>
-                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.twitter" )</th>
-                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.vkontakte" )</th>
-                        </tr>
+                            <tr>
+                                <th>$i18n.getText( "common.concepts.url" )</th>
+                                <th><i>$i18n.getText( "common.words.total" )</i></th>
+                                <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.facebook" )</th>
+                                <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.mymail" )</th>
+                                <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.odnoklassniki" )</th>
+                                <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.twitter" )</th>
+                                <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.vkontakte" )</th>
+                            </tr>
                         </thead>
                         <tbody>
                             #foreach( $shares in $action.sharesArray )
@@ -42,16 +42,16 @@
                             #end
                         </tbody>
                         <tfoot>
-                        <tr>
-                            #set( $total = $action.sharesTotal )
-                            <td><i>$i18n.getText("common.words.grandtotal")</i></td>
-                            <td>$total.total</td>
-                            <td>$total.facebook</td>
-                            <td>$total.mymail</td>
-                            <td>$total.odnoklassniki</td>
-                            <td>$total.twitter</td>
-                            <td>$total.vkontakte</td>
-                        </tr>
+                            <tr>
+                                #set( $total = $action.sharesTotal )
+                                <td><b><i>$i18n.getText("common.words.grandtotal")</i></b></td>
+                                <td><i>$total.total</i></td>
+                                <td>$total.facebook</td>
+                                <td>$total.mymail</td>
+                                <td>$total.odnoklassniki</td>
+                                <td>$total.twitter</td>
+                                <td>$total.vkontakte</td>
+                            </tr>
                         </tfoot>
                     </table>
                 </section>
