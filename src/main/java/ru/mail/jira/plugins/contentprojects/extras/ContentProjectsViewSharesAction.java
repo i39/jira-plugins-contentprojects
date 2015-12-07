@@ -21,7 +21,7 @@ public class ContentProjectsViewSharesAction extends JiraWebActionSupport {
     @Override
     protected void doValidation() {
         if (urls == null || urls.length == 0)
-            addError("urls", getText("issue.field.required", getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.links")));
+            addError("urls", getText("issue.field.required", getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.urls")));
     }
 
     @RequiresXsrfCheck
@@ -40,15 +40,11 @@ public class ContentProjectsViewSharesAction extends JiraWebActionSupport {
 
     @SuppressWarnings("unused")
     public void setUrls(String urlParam) {
-        if (StringUtils.isBlank(urlParam))
-            return;
-
-        String[] urlArray = urlParam.trim().split("\\s+");
-        List<String> urlList = new ArrayList<String>(urlArray.length);
-        for (String url : urlArray) {
-            if (StringUtils.isNotEmpty(url))
-                urlList.add(url);
-        }
+        List<String> urlList = new ArrayList<String>();
+        if (StringUtils.isNotBlank(urlParam))
+            for (String url : urlParam.trim().split("\\s+"))
+                if (StringUtils.isNotEmpty(url))
+                    urlList.add(url);
         this.urls = !urlList.isEmpty() ? urlList.toArray(new String[urlList.size()]) : null;
     }
 
@@ -70,3 +66,4 @@ public class ContentProjectsViewSharesAction extends JiraWebActionSupport {
         return new SharesOutput(null, sharesTotal[0], sharesTotal[1], sharesTotal[2], sharesTotal[3], sharesTotal[4]);
     }
 }
+

@@ -2,6 +2,12 @@
 <head>
     <title>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</title>
     <meta name="decorator" content="general"/>
+    <style>
+        tfoot td, .total {
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body class="aui-page-focused aui-page-focused-xlarge">
 <div id="page">
@@ -20,7 +26,7 @@
                         <thead>
                             <tr>
                                 <th>$i18n.getText( "common.concepts.url" )</th>
-                                <th><i>$i18n.getText( "common.words.total" )</i></th>
+                                <th class="total">$i18n.getText( "common.words.total" )</th>
                                 <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.facebook" )</th>
                                 <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.mymail" )</th>
                                 <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.odnoklassniki" )</th>
@@ -32,7 +38,7 @@
                             #foreach( $shares in $action.sharesArray )
                             <tr>
                                 <td>$shares.url</td>
-                                <td><i>$shares.total</i></td>
+                                <td class="total">$shares.total</td>
                                 <td>$shares.facebook</td>
                                 <td>$shares.mymail</td>
                                 <td>$shares.odnoklassniki</td>
@@ -44,8 +50,8 @@
                         <tfoot>
                             <tr>
                                 #set( $total = $action.sharesTotal )
-                                <td><b><i>$i18n.getText("common.words.grandtotal")</i></b></td>
-                                <td><i>$total.total</i></td>
+                                <td>$i18n.getText( "common.words.grandtotal" )</td>
+                                <td>$total.total</i></td>
                                 <td>$total.facebook</td>
                                 <td>$total.mymail</td>
                                 <td>$total.odnoklassniki</td>

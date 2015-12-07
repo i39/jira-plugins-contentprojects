@@ -7,7 +7,7 @@
 <header class="aui-page-header">
     <div class="aui-page-header-inner">
         <div class="aui-page-header-main">
-            <h1>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title")</h1>
+            <h1>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</h1>
         </div>
     </div>
 </header>
@@ -29,13 +29,13 @@
             <form class="aui" action="ContentProjectsViewShares.jspa" method="post">
                 <input type="hidden" name="atl_token" value="$atl_token" />
                 <div class="field-group">
-                    <label for="contentprojects-url-id">$i18n.getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.links")</label>
-                    <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url-id"></textarea>
-                    <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc")</div>
+                    <label for="contentprojects-url">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.urls" )</label>
+                    <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url"></textarea>
+                    <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.urls.description" )</div>
                     #fieldError( "urls" )
                 </div>
                 <div class="buttons-container">
-                    <button class="aui-button">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btn.get")</button>
+                    <button class="aui-button">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.btnGet" )</button>
                 </div>
             </form>
         </section>
