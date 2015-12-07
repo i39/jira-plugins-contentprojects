@@ -21,9 +21,10 @@ public class SharesOutput {
     private int vkontakte;
 
     /**
-     * @deprecated As of difficult to control parameters in array,
+     * @deprecated Because it's difficult to control parameters in array,
      * use <code>new SharesOutput(url, facebook, mymail, ok, twitter, vkontakte)</code>.
      */
+    @Deprecated
     public SharesOutput(String url, int[] shares) {
         this(url, shares[0], shares[1], shares[2], shares[3], shares[4]);
     }
