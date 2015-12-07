@@ -31,13 +31,7 @@
                 <div class="field-group">
                     <label for="contentprojects-url-id">$i18n.getText("ru.mail.jira.plugins.contentprojects.extras.viewShares.links")</label>
                     <textarea class="textarea long-field" rows="10" name="urls" id="contentprojects-url-id"></textarea>
-                    <div class="description">
-                        <ul>
-                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc1")</li>
-                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc2")</li>
-                            <li>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc3")</li>
-                        </ul>
-                    </div>
+                    <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.url.desc")</div>
                     #fieldError( "urls" )
                 </div>
                 <div class="buttons-container">

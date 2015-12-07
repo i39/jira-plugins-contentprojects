@@ -20,16 +20,10 @@ public class SharesOutput {
     @XmlElement
     private int vkontakte;
 
-    @Deprecated
     /**
-     * Difficult to control parameters in array.
-     * You should use SharesOutput(String url, int facebook, int mymail, int ok, int twitter, int vkontakte) constructor.
+     * @deprecated As of difficult to control parameters in array,
+     * use <code>new SharesOutput(url, facebook, mymail, ok, twitter, vkontakte)</code>.
      */
-    public SharesOutput(int[] shares) {
-        this(null, shares[0], shares[1], shares[2], shares[3], shares[4]);
-    }
-
-    @Deprecated
     public SharesOutput(String url, int[] shares) {
         this(url, shares[0], shares[1], shares[2], shares[3], shares[4]);
     }
