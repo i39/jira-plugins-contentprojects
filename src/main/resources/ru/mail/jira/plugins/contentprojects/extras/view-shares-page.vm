@@ -4,13 +4,11 @@
     <meta name="decorator" content="general"/>
     <style>
         .total-title {
-            font-style: normal;
             font-weight: bold;
         }
 
-        tfoot td, .total {
+        .total {
             font-style: italic;
-            font-weight: normal;
         }
     </style>
 </head>
@@ -56,12 +54,12 @@
                         <tr>
                             #set( $total = $action.sharesTotal )
                             <td class="total-title">$i18n.getText( "common.words.grandtotal" )</td>
-                            <td>$total.total</i></td>
-                            <td>$total.facebook</td>
-                            <td>$total.mymail</td>
-                            <td>$total.odnoklassniki</td>
-                            <td>$total.twitter</td>
-                            <td>$total.vkontakte</td>
+                            <td class="total">$total.total</td>
+                            <td class="total">$total.facebook</td>
+                            <td class="total">$total.mymail</td>
+                            <td class="total">$total.odnoklassniki</td>
+                            <td class="total">$total.twitter</td>
+                            <td class="total">$total.vkontakte</td>
                         </tr>
                         </tfoot>
                     </table>
