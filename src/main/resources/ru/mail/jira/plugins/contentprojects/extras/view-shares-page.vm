@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</title>
+    <meta name="decorator" content="general"/>
+    <style>
+        .total-title {
+            font-weight: bold;
+        }
+
+        .total {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="aui-page-focused aui-page-focused-xlarge">
+<div id="page">
+    <section id="content" role="main">
+        <header class="aui-page-header">
+            <div class="aui-page-header-inner">
+                <div class="aui-page-header-main">
+                    <h1>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.title" )</h1>
+                </div>
+            </div>
+        </header>
+        <div class="aui-page-panel">
+            <div class="aui-page-panel-inner">
+                <section class="aui-page-panel-content">
+                    <table class="aui">
+                        <thead>
+                        <tr>
+                            <th>$i18n.getText( "common.concepts.url" )</th>
+                            <th>$i18n.getText( "common.words.total" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.facebook" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.mymail" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.odnoklassniki" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.twitter" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.vkontakte" )</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            #foreach( $shares in $action.sharesArray )
+                            <tr>
+                                <td>$shares.url</td>
+                                <td class="total">$shares.total</td>
+                                <td>$shares.facebook</td>
+                                <td>$shares.mymail</td>
+                                <td>$shares.odnoklassniki</td>
+                                <td>$shares.twitter</td>
+                                <td>$shares.vkontakte</td>
+                            </tr>
+                            #end
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            #set( $total = $action.sharesTotal )
+                            <td class="total-title">$i18n.getText( "common.words.grandtotal" )</td>
+                            <td class="total">$total.total</td>
+                            <td class="total">$total.facebook</td>
+                            <td class="total">$total.mymail</td>
+                            <td class="total">$total.odnoklassniki</td>
+                            <td class="total">$total.twitter</td>
+                            <td class="total">$total.vkontakte</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

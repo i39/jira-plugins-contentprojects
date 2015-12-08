@@ -144,6 +144,15 @@
         </actions>
     </webwork1>
 
+    <webwork1 key="view-shares-action" class="java.lang.Object" roles-required="use">
+        <actions>
+            <action name="ru.mail.jira.plugins.contentprojects.extras.ContentProjectsViewSharesAction" alias="ContentProjectsViewShares">
+                <view name="input">/ru/mail/jira/plugins/contentprojects/extras/view-shares-input.vm</view>
+                <view name="success">/ru/mail/jira/plugins/contentprojects/extras/view-shares-page.vm</view>
+            </action>
+        </actions>
+    </webwork1>
+
     <component-import key="scheduler-service" interface="com.atlassian.scheduler.SchedulerService" />
     <component key="news-scheduler" class="ru.mail.jira.plugins.contentprojects.extras.NewsScheduler" public="true">
         <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
