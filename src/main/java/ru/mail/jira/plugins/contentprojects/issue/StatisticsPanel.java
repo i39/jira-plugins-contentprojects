@@ -16,7 +16,7 @@ import ru.mail.jira.plugins.contentprojects.statistics.Statistic;
 import java.util.*;
 
 public class StatisticsPanel implements ContextProvider {
-    private static final String JQL = "project = %d AND issuetype = %s AND cf[%d] > \"-37d\"";
+    private static final String JQL = "project = %d AND issuetype = %s AND status = 11595 AND cf[%d] > \"-37d\"";
 
     private static final Logger log = Logger.getLogger(StatisticsPanel.class);
     private final List<CustomField> customFields;
