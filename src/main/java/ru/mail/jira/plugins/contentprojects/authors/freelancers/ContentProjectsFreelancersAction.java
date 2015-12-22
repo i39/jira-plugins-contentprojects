@@ -94,13 +94,15 @@ public class ContentProjectsFreelancersAction extends JiraWebActionSupport {
                                      @FormParam("contractDate") final String contractDate,
                                      @FormParam("type") final String contractType,
                                      @FormParam("inn") final String inn,
-                                     @FormParam("snils") final String snils) {
+                                     @FormParam("snils") final String snils,
+                                     @FormParam("worksName") final String worksName,
+                                     @FormParam("lastAnnexNumber") final int lastAnnexNumber) {
         return new RestExecutor<Integer>() {
             @Override
             protected Integer doAction() throws Exception {
                 if (!isUserAllowed())
                     throw new SecurityException();
-                return freelancerManager.createFreelancer(StringUtils.trimToNull(fullName), StringUtils.trimToNull(payeeName), parseContractDate(contractDate), parseContractType(contractType), StringUtils.trimToNull(inn), StringUtils.trimToNull(snils));
+                return freelancerManager.createFreelancer(StringUtils.trimToNull(fullName), StringUtils.trimToNull(payeeName), parseContractDate(contractDate), parseContractType(contractType), StringUtils.trimToNull(inn), StringUtils.trimToNull(snils), StringUtils.trimToNull(worksName), lastAnnexNumber);
             }
         }.getResponse();
     }
@@ -114,13 +116,15 @@ public class ContentProjectsFreelancersAction extends JiraWebActionSupport {
                                      @FormParam("contractDate") final String contractDate,
                                      @FormParam("type") final String contractType,
                                      @FormParam("inn") final String inn,
-                                     @FormParam("snils") final String snils) {
+                                     @FormParam("snils") final String snils,
+                                     @FormParam("worksName") final String worksName,
+                                     @FormParam("lastAnnexNumber") final int lastAnnexNumber) {
         return new RestExecutor<Void>() {
             @Override
             protected Void doAction() throws Exception {
                 if (!isUserAllowed())
                     throw new SecurityException();
-                freelancerManager.updateFreelancer(id, StringUtils.trimToNull(fullName), StringUtils.trimToNull(payeeName), parseContractDate(contractDate), parseContractType(contractType), StringUtils.trimToNull(inn), StringUtils.trimToNull(snils));
+                freelancerManager.updateFreelancer(id, StringUtils.trimToNull(fullName), StringUtils.trimToNull(payeeName), parseContractDate(contractDate), parseContractType(contractType), StringUtils.trimToNull(inn), StringUtils.trimToNull(snils), StringUtils.trimToNull(worksName), lastAnnexNumber);
                 return null;
             }
         }.getResponse();

@@ -26,6 +26,7 @@ import ru.mail.jira.plugins.commons.RestExecutor;
 import ru.mail.jira.plugins.contentprojects.authors.Author;
 import ru.mail.jira.plugins.contentprojects.authors.FreelancerAuthor;
 import ru.mail.jira.plugins.contentprojects.authors.freelancers.Freelancer;
+import ru.mail.jira.plugins.contentprojects.authors.freelancers.FreelancerManager;
 import ru.mail.jira.plugins.contentprojects.common.Consts;
 import ru.mail.jira.plugins.contentprojects.configuration.PluginData;
 import ru.mail.jira.plugins.contentprojects.gadgets.RemainingBudgetResource;
@@ -47,12 +48,14 @@ import java.util.*;
 @Path("/createActs")
 @Produces({MediaType.APPLICATION_JSON})
 public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
-    private static final String PAYMENT_ACT = "\u0410\u043A\u0442 \u043E\u043F\u043B\u0430\u0442\u044B";
+    private static final String PAYMENT_ACT = "\u0410\u043A\u0442 \u043E\u043F\u043B\u0430\u0442\u044B"; //Акт оплаты
     private final DateFormat OPTION_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM yyyy"), LocalUtils.MONTH_NAMES_NOMINATIVE);
     private final DateFormat DAY_OF_THE_MONTH_FORMAT = new SimpleDateFormat("dd");
     private final DateFormat MONTH_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
     private final DateFormat YEAR_FORMAT = new SimpleDateFormat("yy");
+    private final DateFormat DATE_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("dd MMMM yyyy"), LocalUtils.MONTH_NAMES_GENITIVE);
 
+    private final FreelancerManager freelancerManager;
     private final IssueLinkService issueLinkService;
     private final IssueService issueService;
     private final OptionsManager optionsManager;
@@ -67,7 +70,8 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
     private Option option;
     private Set<Project> projects;
 
-    public ContentProjectsCreateActsAction(IssueLinkService issueLinkService, IssueService issueService, OptionsManager optionsManager, PluginData pluginData, ProjectManager projectManager, SearchProvider searchProvider, SearchService searchService) {
+    public ContentProjectsCreateActsAction(FreelancerManager freelancerManager, IssueLinkService issueLinkService, IssueService issueService, OptionsManager optionsManager, PluginData pluginData, ProjectManager projectManager, SearchProvider searchProvider, SearchService searchService) {
+        this.freelancerManager = freelancerManager;
         this.issueLinkService = issueLinkService;
         this.issueService = issueService;
         this.optionsManager = optionsManager;
@@ -109,7 +113,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
             addError("projectIds", getText("issue.field.required", getText("common.concepts.projects")));
     }
 
-    private Collection<Date> getPossibleDates() throws ParseException {
+    private Collection<Date> getPossibleActDates() throws ParseException {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(OPTION_FORMAT.parse(option.getValue()));
 
@@ -127,93 +131,222 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         return result;
     }
 
+    private Collection<Date> getPossibleAnnexDates() throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(OPTION_FORMAT.parse(option.getValue()));
+
+        Collection<Date> result = new ArrayList<Date>();
+        for (int day = 1; day <= 15; day++) {
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+
+            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            if (dayOfMonth != day)
+                break;
+
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                continue;
+
+            int month = calendar.get(Calendar.MONTH);
+            if (month == Calendar.JANUARY && dayOfMonth < 9)
+                continue;
+            if (month == Calendar.MARCH && dayOfMonth == 8)
+                continue;
+            if (month == Calendar.MAY && (dayOfMonth == 1 || dayOfMonth == 9))
+                continue;
+            if (month == Calendar.JUNE && dayOfMonth == 12)
+                continue;
+            if (month == Calendar.NOVEMBER && dayOfMonth == 4)
+                continue;
+            result.add(calendar.getTime());
+        }
+        return result;
+    }
+
+    class FreelancerData {
+        Collection<String> issueKeys = new ArrayList<String>();
+        Collection<String> issueSummaries = new ArrayList<String>();
+        Collection<String> issueDescriptions = new ArrayList<String>();
+        Collection<String> worksName = new HashSet<String>();
+        double totalCost = 0;
+        double totalImages = 0;
+    }
+
+    private JSONObject getArticleContractJson(Freelancer freelancer, FreelancerData freelancerData, Date paymentActDate, Project project) throws Exception {
+        JSONObject json = new JSONObject();
+        json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID));
+        json.put("variableValues", Arrays.<Object>asList(
+                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
+                MONTH_FORMAT.format(freelancer.getContractDate()),
+                YEAR_FORMAT.format(freelancer.getContractDate()),
+                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
+                MONTH_FORMAT.format(paymentActDate.getTime()),
+                YEAR_FORMAT.format(paymentActDate.getTime()),
+                freelancerData.issueSummaries.size(),
+                StringUtils.join(freelancerData.issueSummaries, "\n"),
+                String.format(new Locale("ru"), "%,d", (int) freelancerData.totalCost),
+                LocalUtils.numberToCaption((int) freelancerData.totalCost),
+                String.format(new Locale("ru"), "%02d", (int) (freelancerData.totalCost * 100 % 100)),
+                StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
+                project.getName().substring(4)
+        ));
+        return json;
+    }
+
+    private JSONObject getImagesContractJson(Freelancer freelancer, FreelancerData freelancerData, Date paymentActDate, Project project) throws Exception {
+        JSONObject json = new JSONObject();
+        json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID));
+        json.put("variableValues", Arrays.<Object>asList(
+                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
+                MONTH_FORMAT.format(freelancer.getContractDate()),
+                YEAR_FORMAT.format(freelancer.getContractDate()),
+                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
+                MONTH_FORMAT.format(paymentActDate.getTime()),
+                YEAR_FORMAT.format(paymentActDate.getTime()),
+                String.format(new Locale("ru"), "%,d", (int) freelancerData.totalImages),
+                StringUtils.join(freelancerData.issueDescriptions, "\n"),
+                String.format(new Locale("ru"), "%,d", (int) freelancerData.totalCost),
+                LocalUtils.numberToCaption((int) freelancerData.totalCost),
+                String.format(new Locale("ru"), "%02d", (int) (freelancerData.totalCost * 100 % 100)),
+                StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
+                project.getName().substring(4)
+        ));
+        return json;
+    }
+
+    private JSONObject getCustomOrderContractJson(Freelancer freelancer, FreelancerData freelancerData, Date paymentActDate, Date paymentAnnexDate, Project project) throws Exception {
+        JSONObject json = new JSONObject();
+        json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID));
+        json.put("variableValues", Arrays.<Object>asList(
+                String.valueOf(freelancer.getLastAnnexNumber() + 1),
+                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
+                MONTH_FORMAT.format(freelancer.getContractDate()),
+                YEAR_FORMAT.format(freelancer.getContractDate()),
+                DATE_FORMAT.format(paymentAnnexDate.getTime()),
+                StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
+                project.getName().substring(4),
+                StringUtils.join(freelancerData.worksName, "\n"),
+                String.format(new Locale("ru"), "%,d", (int) freelancerData.totalCost),
+                DATE_FORMAT.format(paymentActDate.getTime())
+        ));
+        return json;
+    }
+
+    private JSONObject getContractorContractJson(Freelancer freelancer, FreelancerData freelancerData, Date paymentActDate, Date paymentAnnexDate, Project project) throws Exception {
+        JSONObject json = new JSONObject();
+        json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID));
+        json.put("variableValues", Arrays.<Object>asList(
+                String.valueOf(freelancer.getLastAnnexNumber() + 1),
+                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
+                MONTH_FORMAT.format(freelancer.getContractDate()),
+                YEAR_FORMAT.format(freelancer.getContractDate()),
+                DAY_OF_THE_MONTH_FORMAT.format(paymentAnnexDate.getTime()),
+                MONTH_FORMAT.format(paymentAnnexDate.getTime()),
+                YEAR_FORMAT.format(paymentAnnexDate.getTime()),
+                StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
+                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
+                MONTH_FORMAT.format(paymentActDate.getTime()),
+                YEAR_FORMAT.format(paymentActDate.getTime()),
+                StringUtils.join(freelancerData.worksName, "\n"),
+                String.format(new Locale("ru"), "%,d", (int) freelancerData.totalCost),
+                project.getName().substring(4)
+        ));
+        return json;
+    }
+
     private Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> prepareIssues() throws Exception {
         CustomField paymentMonthCf = CommonUtils.getCustomField(Consts.PAYMENT_MONTH_CF_ID);
         CustomField costCf = CommonUtils.getCustomField(Consts.COST_CF_ID);
+        CustomField numberImagesCf = CommonUtils.getCustomField(Consts.IMAGES_NUMBER_CF_ID);
         CustomField textAuthorCf = CommonUtils.getCustomField(Consts.TEXT_AUTHOR_CF_ID);
 
-        Collection<Date> possibleDates = getPossibleDates();
-        Iterator<Date> possibleDatesIterator = possibleDates.iterator();
-
         Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> result = new ArrayList<Pair<IssueService.CreateValidationResult, Collection<String>>>();
-        for (Project project : projects) {
-            Query query = JqlQueryBuilder.newClauseBuilder().project(project.getId()).buildQuery();
-            SearchResults searchResults = searchProvider.search(query, getLoggedInApplicationUser(), PagerFilter.getUnlimitedFilter());
+        for (Map.Entry<String, String> contract : Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.entrySet()) {
+            Collection<Date> possibleActDates = getPossibleActDates();
+            Iterator<Date> possibleActDatesIterator = possibleActDates.iterator();
+            Collection<Date> possibleAnnexDates = getPossibleAnnexDates();
+            Iterator<Date> possibleAnnexDatesIterator = possibleAnnexDates.iterator();
 
-            class FreelancerData {
-                Collection<String> issueKeys = new ArrayList<String>();
-                Collection<String> issueSummaries = new ArrayList<String>();
-                double totalCost = 0;
-            }
-            Map<Freelancer, FreelancerData> freelancerDataMap = new HashMap<Freelancer, FreelancerData>();
-            for (Issue issue : searchResults.getIssues()) {
-                if (!option.equals(issue.getCustomFieldValue(paymentMonthCf)))
-                    continue;
+            for (Project project : projects) {
+                Query query = JqlQueryBuilder.newClauseBuilder().project(project.getId()).and().issueType(contract.getValue()).buildQuery();
+                SearchResults searchResults = searchProvider.search(query, getLoggedInApplicationUser(), PagerFilter.getUnlimitedFilter());
 
-                if (!Consts.STATUS_SPENT_IDS.contains(issue.getStatusObject().getId())) {
-                    addErrorMessage(getText("ru.mail.jira.plugins.contentprojects.extras.createActs.error.illegalStatus", issue.getKey()));
-                    continue;
+                Map<Freelancer, FreelancerData> freelancerDataMap = new HashMap<Freelancer, FreelancerData>();
+                for (Issue issue : searchResults.getIssues()) {
+                    if (!option.equals(issue.getCustomFieldValue(paymentMonthCf)))
+                        continue;
+
+                    if (!Consts.STATUS_SPENT_IDS.contains(issue.getStatusObject().getId())) {
+                        addErrorMessage(getText("ru.mail.jira.plugins.contentprojects.extras.createActs.error.illegalStatus", issue.getKey()));
+                        continue;
+                    }
+
+                    Author author = (Author) issue.getCustomFieldValue(textAuthorCf);
+                    if (!(author instanceof FreelancerAuthor)) {
+                        addErrorMessage(getText("ru.mail.jira.plugins.contentprojects.extras.createActs.error.illegalTextAuthor", issue.getKey()));
+                        continue;
+                    }
+
+                    Freelancer freelancer = ((FreelancerAuthor) author).getFreelancer();
+                    FreelancerData freelancerData = freelancerDataMap.get(freelancer);
+                    if (freelancerData == null) {
+                        freelancerData = new FreelancerData();
+                        freelancerDataMap.put(freelancer, freelancerData);
+                    }
+                    freelancerData.issueKeys.add(issue.getKey());
+                    freelancerData.issueSummaries.add(issue.getSummary());
+                    if (issue.getDescription() != null)
+                        freelancerData.issueDescriptions.add(issue.getDescription());
+                    if (freelancer.getWorksName() != null)
+                        freelancerData.worksName.add(freelancer.getWorksName());
+                    freelancerData.totalCost += (Double) issue.getCustomFieldValue(costCf);
+                    if (issue.getCustomFieldValue(numberImagesCf) != null)
+                        freelancerData.totalImages += (Double) issue.getCustomFieldValue(numberImagesCf);
                 }
 
-                Author author = (Author) issue.getCustomFieldValue(textAuthorCf);
-                if (!(author instanceof FreelancerAuthor)) {
-                    addErrorMessage(getText("ru.mail.jira.plugins.contentprojects.extras.createActs.error.illegalTextAuthor", issue.getKey()));
-                    continue;
-                }
+                for (Map.Entry<Freelancer, FreelancerData> e : freelancerDataMap.entrySet()) {
+                    Date paymentActDate = possibleActDatesIterator.next();
+                    if (!possibleActDatesIterator.hasNext())
+                        possibleActDatesIterator = possibleActDates.iterator();
 
-                Freelancer freelancer = ((FreelancerAuthor) author).getFreelancer();
-                FreelancerData freelancerData = freelancerDataMap.get(freelancer);
-                if (freelancerData == null) {
-                    freelancerData = new FreelancerData();
-                    freelancerDataMap.put(freelancer, freelancerData);
-                }
-                freelancerData.issueKeys.add(issue.getKey());
-                freelancerData.issueSummaries.add(issue.getSummary());
-                freelancerData.totalCost += (Double) issue.getCustomFieldValue(costCf);
-            }
+                    Date paymentAnnexDate = possibleAnnexDatesIterator.next();
+                    if (!possibleAnnexDatesIterator.hasNext())
+                        possibleAnnexDatesIterator = possibleAnnexDates.iterator();
 
-            for (Map.Entry<Freelancer, FreelancerData> e : freelancerDataMap.entrySet()) {
-                Date paymentActDate = possibleDatesIterator.next();
-                if (!possibleDatesIterator.hasNext())
-                    possibleDatesIterator = possibleDates.iterator();
+                    JSONObject json = new JSONObject();
+                    String contractType = contract.getKey();
+                    if (contractType.equals("ARTICLE"))
+                        json = getArticleContractJson(e.getKey(), e.getValue(), paymentActDate, project);
+                    else if (contractType.equals("IMAGE"))
+                        json = getImagesContractJson(e.getKey(), e.getValue(), paymentActDate, project);
+                    else if (contractType.equals("CUSTOM_ORDER")) {
+                        json = getCustomOrderContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
+                        freelancerManager.incrementAnnexNumber(e.getKey().getID());
+                    }
+                    else if (contractType.equals("CONTRACTOR")) {
+                        json = getContractorContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
+                        freelancerManager.incrementAnnexNumber(e.getKey().getID());
+                    }
 
-                JSONObject json = new JSONObject();
-                json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_TEMPLATE_ID));
-                json.put("variableValues", Arrays.<Object>asList(
-                        DAY_OF_THE_MONTH_FORMAT.format(e.getKey().getContractDate()),
-                        MONTH_FORMAT.format(e.getKey().getContractDate()),
-                        YEAR_FORMAT.format(e.getKey().getContractDate()),
-                        DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
-                        MONTH_FORMAT.format(paymentActDate.getTime()),
-                        YEAR_FORMAT.format(paymentActDate.getTime()),
-                        e.getValue().issueSummaries.size(),
-                        StringUtils.join(e.getValue().issueSummaries, "\n"),
-                        String.format(new Locale("ru"), "%,d", (int) e.getValue().totalCost),
-                        LocalUtils.numberToCaption((int) e.getValue().totalCost),
-                        String.format(new Locale("ru"), "%02d", (int) (e.getValue().totalCost * 100 % 100)),
-                        StringUtils.isNotEmpty(e.getKey().getPayeeName()) ? e.getKey().getPayeeName() : e.getKey().getFullName(),
-                        project.getName().substring(4)
-                ));
+                    IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
+                    issueInputParameters.setProjectId(Consts.PAYMENT_ACT_PROJECT_ID);
+                    issueInputParameters.setIssueTypeId(String.valueOf(Consts.PAYMENT_ACT_ISSUE_TYPE_ID));
+                    issueInputParameters.setReporterId(getLoggedInApplicationUser().getName());
+                    issueInputParameters.setAssigneeId(getLoggedInApplicationUser().getName());
+                    issueInputParameters.setSummary(String.format(new Locale("ru"), "%s, %s, %s, %,d \u0440\u0443\u0431", PAYMENT_ACT, e.getKey().getFullName(), option.getValue(), (int) e.getValue().totalCost));
+                    issueInputParameters.setDescription(PAYMENT_ACT);
+                    issueInputParameters.setComponentIds(Consts.PAYMENT_ACT_COMPONENT_VALUE);
+                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_LEGAL_ENTITY_CF_ID, Consts.PAYMENT_ACT_LEGAL_ENTITY_VALUE);
+                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_CONTRAGENT_CF_ID, Consts.PAYMENT_ACT_CONTRAGENT_VALUE);
+                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CF_ID, json.toString());
+                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_PROJECT_CF_ID, Consts.PAYMENT_ACT_PROJECT_VALUE_MAP.get(project.getId()));
+                    IssueService.CreateValidationResult createValidationResult = issueService.validateCreate(getLoggedInApplicationUser().getDirectoryUser(), issueInputParameters);
 
-                IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
-                issueInputParameters.setProjectId(Consts.PAYMENT_ACT_PROJECT_ID);
-                issueInputParameters.setIssueTypeId(String.valueOf(Consts.PAYMENT_ACT_ISSUE_TYPE_ID));
-                issueInputParameters.setReporterId(getLoggedInApplicationUser().getName());
-                issueInputParameters.setAssigneeId(getLoggedInApplicationUser().getName());
-                issueInputParameters.setSummary(String.format(new Locale("ru"), "%s, %s, %s, %,d \u0440\u0443\u0431", PAYMENT_ACT, e.getKey().getFullName(), option.getValue(), (int) e.getValue().totalCost));
-                issueInputParameters.setDescription(PAYMENT_ACT);
-                issueInputParameters.setComponentIds(Consts.PAYMENT_ACT_COMPONENT_VALUE);
-                issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_LEGAL_ENTITY_CF_ID, Consts.PAYMENT_ACT_LEGAL_ENTITY_VALUE);
-                issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_CONTRAGENT_CF_ID, Consts.PAYMENT_ACT_CONTRAGENT_VALUE);
-                issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CF_ID, json.toString());
-                issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_PROJECT_CF_ID, Consts.PAYMENT_ACT_PROJECT_VALUE_MAP.get(project.getId()));
-                IssueService.CreateValidationResult createValidationResult = issueService.validateCreate(getLoggedInApplicationUser().getDirectoryUser(), issueInputParameters);
-
-                if (createValidationResult.isValid()) {
-                    result.add(Pair.of(createValidationResult, e.getValue().issueKeys));
-                } else {
-                    addErrorMessages(createValidationResult.getErrorCollection().getErrorMessages());
-                    addErrorMessages(createValidationResult.getErrorCollection().getErrors().values());
+                    if (createValidationResult.isValid()) {
+                        result.add(Pair.of(createValidationResult, e.getValue().issueKeys));
+                    } else {
+                        addErrorMessages(createValidationResult.getErrorCollection().getErrorMessages());
+                        addErrorMessages(createValidationResult.getErrorCollection().getErrors().values());
+                    }
                 }
             }
         }

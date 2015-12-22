@@ -2,6 +2,7 @@
     AJS.toInit(function () {
         $('#contentprojects-freelancer-add').click(function () {
             $('#contentprojects-dialog').find('.aui-dialog2-header-main').text(AJS.I18n.getText('ru.mail.jira.plugins.contentprojects.authors.freelancers.addFreelancer'));
+            $('#contentprojects-dialog-works-name').val('');
             $('#contentprojects-dialog-ok').text(AJS.I18n.getText('common.forms.add'));
             AJS.dialog2('#contentprojects-dialog').show();
         });
@@ -25,6 +26,8 @@
                     $('#contentprojects-dialog-contract-type').val(result.contractType).change();
                     $('#contentprojects-dialog-inn').val(result.inn);
                     $('#contentprojects-dialog-snils').val(result.snils);
+                    $('#contentprojects-dialog-works-name').val(result.worksName);
+                    $('#contentprojects-dialog-last-annex-number').val(result.lastAnnexNumber);
                     AJS.dialog2('#contentprojects-dialog').show();
                 },
                 error: function(resp) {
@@ -68,6 +71,8 @@
             var contractTypeText = $('#contentprojects-dialog-contract-type').find('option:selected').text();
             var inn = $('#contentprojects-dialog-inn').val();
             var snils = $('#contentprojects-dialog-snils').val();
+            var worksName = $('#contentprojects-dialog-works-name').val();
+            var lastAnnexNumber = $('#contentprojects-dialog-last-annex-number').val();
 
             if (id) {
                 $.ajax({
@@ -80,7 +85,9 @@
                         contractDate: contractDate,
                         type: contractType,
                         inn: inn,
-                        snils: snils
+                        snils: snils,
+                        worksName: worksName,
+                        lastAnnexNumber: lastAnnexNumber
                     },
                     success: function () {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -93,6 +100,8 @@
                         $tr.find('.contentprojects-freelancer-contract-type').text(contractTypeText);
                         $tr.find('.contentprojects-freelancer-inn').text(inn);
                         $tr.find('.contentprojects-freelancer-snils').text(snils);
+                        $tr.find('.contentprojects-freelancer-works-name').text(worksName);
+                        $tr.find('.contentprojects-freelancer-last-annex-number').text(lastAnnexNumber);
                     },
                     error: handleCreateAndUpdateError
                 });
@@ -107,7 +116,9 @@
                         contractDate: contractDate,
                         type: contractType,
                         inn: inn,
-                        snils: snils
+                        snils: snils,
+                        worksName: worksName,
+                        lastAnnexNumber: lastAnnexNumber
                     },
                     success: function (result) {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -121,6 +132,8 @@
                         html += '<td class="contentprojects-freelancer-contract-type">' + contractTypeText + '</td>';
                         html += '<td class="contentprojects-freelancer-inn">' + inn + '</td>';
                         html += '<td class="contentprojects-freelancer-snils">' + snils + '</td>';
+                        html += '<td class="contentprojects-freelancer-works-name">' + worksName + '</td>';
+                        html += '<td class="contentprojects-freelancer-last-annex-number">' + lastAnnexNumber + '</td>';
                         html += '<td>';
                         html += '<ul class="operations-list">';
                         html += '<li><a href="#" class="contentprojects-freelancer-edit">' + AJS.I18n.getText('common.forms.edit') + '</a></li>&nbsp;';
