@@ -117,24 +117,24 @@ public class FreelancerManager {
         });
     }
 
-    public void deleteFreelancer(final int id) {
-        ao.executeInTransaction(new TransactionCallback<Void>() {
-            @Override
-            public Void doInTransaction() {
-                Freelancer freelancer = getFreelancer(id);
-                freelancer.setDeleted(true);
-                freelancer.save();
-                return null;
-            }
-        });
-    }
-
     public void incrementAnnexNumber(final int id) {
         ao.executeInTransaction(new TransactionCallback<Void>() {
             @Override
             public Void doInTransaction() {
                 Freelancer freelancer = getFreelancer(id);
                 freelancer.setLastAnnexNumber(freelancer.getLastAnnexNumber() + 1);
+                freelancer.save();
+                return null;
+            }
+        });
+    }
+
+    public void deleteFreelancer(final int id) {
+        ao.executeInTransaction(new TransactionCallback<Void>() {
+            @Override
+            public Void doInTransaction() {
+                Freelancer freelancer = getFreelancer(id);
+                freelancer.setDeleted(true);
                 freelancer.save();
                 return null;
             }

@@ -61,7 +61,10 @@ public class Consts {
     public static final long PAYMENT_ACT_PROJECT_CF_ID = 11542;
     public static final Map<Long, String> PAYMENT_ACT_PROJECT_VALUE_MAP = new HashMap<Long, String>();
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CF_ID = 26000;
-    public static final Map<String, String> PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES = new HashMap<String, String>();
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID = "1"; //todo: change to a production value
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID = "2"; //todo: change to a production value
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID = "4"; //todo: change to a production value
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID = "10000"; //todo: change to a production value
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 52; //todo: change to a production value
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 53; //todo: change to a production value
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 55; //todo: change to a production value
@@ -76,10 +79,6 @@ public class Consts {
         PAYMENT_ACT_PROJECT_VALUE_MAP.put(19272L, "23816");
         PAYMENT_ACT_PROJECT_VALUE_MAP.put(19273L, "23811");
         PAYMENT_ACT_PROJECT_VALUE_MAP.put(19274L, "23812");
-        PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.put("ARTICLE", "12900"); //todo: change to a production value
-        PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.put("IMAGE", "15602"); //todo: change to a production value
-        PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.put("CUSTOM_ORDER", "15604"); //todo: change to a production value
-        PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.put("CONTRACTOR", "15603"); //todo: change to a production value
     }
 
     public static final long NOTIFICATION_PROJECT_ROLE_ID = 10030;

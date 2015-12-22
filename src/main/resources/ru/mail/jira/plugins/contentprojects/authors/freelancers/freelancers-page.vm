@@ -125,6 +125,7 @@
                     $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksName" )
                 </label>
                 <textarea class="textarea" type="text" id="contentprojects-dialog-works-name"></textarea>
+                <div class="description"> $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksName.description" )</div>
                 <div id="contentprojects-dialog-works-name-error" class="error"></div>
             </div>
             <div class="field-group">
@@ -133,6 +134,7 @@
                     <span id="contentprojects-dialog-last-annex-number-req" class="aui-icon icon-required hidden"></span>
                 </label>
                 <input class="text" type="text" id="contentprojects-dialog-last-annex-number" maxlength="254" />
+                <div class="description"> $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.lastAnnexNumber.description" )</div>
                 <div id="contentprojects-dialog-last-annex-number-error" class="error"></div>
             </div>
             <input class="hidden" type="submit" />

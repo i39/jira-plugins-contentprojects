@@ -69,6 +69,8 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
 
     private Option option;
     private Set<Project> projects;
+    private List<Date> availableActDates;
+    private List<Date> availableAnnexDates;
 
     public ContentProjectsCreateActsAction(FreelancerManager freelancerManager, IssueLinkService issueLinkService, IssueService issueService, OptionsManager optionsManager, PluginData pluginData, ProjectManager projectManager, SearchProvider searchProvider, SearchService searchService) {
         this.freelancerManager = freelancerManager;
@@ -113,41 +115,25 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
             addError("projectIds", getText("issue.field.required", getText("common.concepts.projects")));
     }
 
-    private Collection<Date> getPossibleActDates() throws ParseException {
+    private void buildAvailableDates() throws ParseException {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(OPTION_FORMAT.parse(option.getValue()));
 
-        Collection<Date> result = new ArrayList<Date>();
+        availableActDates = new ArrayList<Date>();
+        availableAnnexDates = new ArrayList<Date>();
         for (int day = 15; day <= 31; day++) {
-            calendar.set(Calendar.DAY_OF_MONTH, day);
-            if (calendar.get(Calendar.DAY_OF_MONTH) != day)
-                break;
-            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                continue;
-            if (calendar.get(Calendar.MONTH) == Calendar.FEBRUARY && calendar.get(Calendar.DAY_OF_MONTH) == 23)
-                continue;
-            result.add(calendar.getTime());
-        }
-        return result;
-    }
-
-    private Collection<Date> getPossibleAnnexDates() throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(OPTION_FORMAT.parse(option.getValue()));
-
-        Collection<Date> result = new ArrayList<Date>();
-        for (int day = 1; day <= 15; day++) {
             calendar.set(Calendar.DAY_OF_MONTH, day);
 
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            if (dayOfMonth != day)
+            if (calendar.get(Calendar.DAY_OF_MONTH) != dayOfMonth)
                 break;
-
             if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                 continue;
 
             int month = calendar.get(Calendar.MONTH);
             if (month == Calendar.JANUARY && dayOfMonth < 9)
+                continue;
+            if (month == Calendar.FEBRUARY && dayOfMonth == 23)
                 continue;
             if (month == Calendar.MARCH && dayOfMonth == 8)
                 continue;
@@ -157,9 +143,11 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 continue;
             if (month == Calendar.NOVEMBER && dayOfMonth == 4)
                 continue;
-            result.add(calendar.getTime());
+            if (day <= 15)
+                availableAnnexDates.add(calendar.getTime());
+            else if (day >= 15)
+                availableActDates.add(calendar.getTime());
         }
-        return result;
     }
 
     class FreelancerData {
@@ -260,14 +248,14 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         CustomField textAuthorCf = CommonUtils.getCustomField(Consts.TEXT_AUTHOR_CF_ID);
 
         Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> result = new ArrayList<Pair<IssueService.CreateValidationResult, Collection<String>>>();
-        for (Map.Entry<String, String> contract : Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_TYPES.entrySet()) {
-            Collection<Date> possibleActDates = getPossibleActDates();
-            Iterator<Date> possibleActDatesIterator = possibleActDates.iterator();
-            Collection<Date> possibleAnnexDates = getPossibleAnnexDates();
-            Iterator<Date> possibleAnnexDatesIterator = possibleAnnexDates.iterator();
 
-            for (Project project : projects) {
-                Query query = JqlQueryBuilder.newClauseBuilder().project(project.getId()).and().issueType(contract.getValue()).buildQuery();
+        buildAvailableDates();
+        Iterator<Date> possibleActDatesIterator = availableActDates.iterator();
+        Iterator<Date> possibleAnnexDatesIterator = availableAnnexDates.iterator();
+
+        for (Project project : projects) {
+            for (String contractTypeId: Arrays.asList(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID, Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID, Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID, Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID)) {
+                Query query = JqlQueryBuilder.newClauseBuilder().project(project.getId()).and().issueType(contractTypeId).buildQuery();
                 SearchResults searchResults = searchProvider.search(query, getLoggedInApplicationUser(), PagerFilter.getUnlimitedFilter());
 
                 Map<Freelancer, FreelancerData> freelancerDataMap = new HashMap<Freelancer, FreelancerData>();
@@ -306,23 +294,22 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 for (Map.Entry<Freelancer, FreelancerData> e : freelancerDataMap.entrySet()) {
                     Date paymentActDate = possibleActDatesIterator.next();
                     if (!possibleActDatesIterator.hasNext())
-                        possibleActDatesIterator = possibleActDates.iterator();
+                        possibleActDatesIterator = availableActDates.iterator();
 
                     Date paymentAnnexDate = possibleAnnexDatesIterator.next();
                     if (!possibleAnnexDatesIterator.hasNext())
-                        possibleAnnexDatesIterator = possibleAnnexDates.iterator();
+                        possibleAnnexDatesIterator = availableAnnexDates.iterator();
 
                     JSONObject json = new JSONObject();
-                    String contractType = contract.getKey();
-                    if (contractType.equals("ARTICLE"))
+                    if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID))
                         json = getArticleContractJson(e.getKey(), e.getValue(), paymentActDate, project);
-                    else if (contractType.equals("IMAGE"))
+                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID))
                         json = getImagesContractJson(e.getKey(), e.getValue(), paymentActDate, project);
-                    else if (contractType.equals("CUSTOM_ORDER")) {
+                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID)) {
                         json = getCustomOrderContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
                         freelancerManager.incrementAnnexNumber(e.getKey().getID());
                     }
-                    else if (contractType.equals("CONTRACTOR")) {
+                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID)) {
                         json = getContractorContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
                         freelancerManager.incrementAnnexNumber(e.getKey().getID());
                     }
@@ -334,11 +321,11 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                     issueInputParameters.setAssigneeId(getLoggedInApplicationUser().getName());
                     issueInputParameters.setSummary(String.format(new Locale("ru"), "%s, %s, %s, %,d \u0440\u0443\u0431", PAYMENT_ACT, e.getKey().getFullName(), option.getValue(), (int) e.getValue().totalCost));
                     issueInputParameters.setDescription(PAYMENT_ACT);
-                    issueInputParameters.setComponentIds(Consts.PAYMENT_ACT_COMPONENT_VALUE);
-                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_LEGAL_ENTITY_CF_ID, Consts.PAYMENT_ACT_LEGAL_ENTITY_VALUE);
-                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_CONTRAGENT_CF_ID, Consts.PAYMENT_ACT_CONTRAGENT_VALUE);
+                    //                    issueInputParameters.setComponentIds(Consts.PAYMENT_ACT_COMPONENT_VALUE);
+                    //                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_LEGAL_ENTITY_CF_ID, Consts.PAYMENT_ACT_LEGAL_ENTITY_VALUE);
+                    //                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_CONTRAGENT_CF_ID, Consts.PAYMENT_ACT_CONTRAGENT_VALUE);
                     issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CF_ID, json.toString());
-                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_PROJECT_CF_ID, Consts.PAYMENT_ACT_PROJECT_VALUE_MAP.get(project.getId()));
+                    //                    issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_PROJECT_CF_ID, Consts.PAYMENT_ACT_PROJECT_VALUE_MAP.get(project.getId()));
                     IssueService.CreateValidationResult createValidationResult = issueService.validateCreate(getLoggedInApplicationUser().getDirectoryUser(), issueInputParameters);
 
                     if (createValidationResult.isValid()) {

@@ -2,7 +2,6 @@
     AJS.toInit(function () {
         $('#contentprojects-freelancer-add').click(function () {
             $('#contentprojects-dialog').find('.aui-dialog2-header-main').text(AJS.I18n.getText('ru.mail.jira.plugins.contentprojects.authors.freelancers.addFreelancer'));
-            $('#contentprojects-dialog-works-name').val('');
             $('#contentprojects-dialog-ok').text(AJS.I18n.getText('common.forms.add'));
             AJS.dialog2('#contentprojects-dialog').show();
         });
@@ -165,7 +164,7 @@
             $('.contentprojects-dialog-error-field').removeClass('contentprojects-dialog-error-field');
             $(this).find('.error').empty();
 
-            $(this).find('input').val('');
+            $(this).find('input, textarea').val('');
             var $contractType = $('#contentprojects-dialog-contract-type');
             $contractType.val($contractType.find('option:first').val()).change();
         });
