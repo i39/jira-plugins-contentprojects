@@ -25,8 +25,8 @@ public interface Freelancer extends Entity {
     String getSnils();
     void setSnils(String snils);
 
-    String getWorksName();
-    void setWorksName(String worksName);
+    String getWorksNames();
+    void setWorksNames(String worksNames);
 
     int getLastAnnexNumber();
     void setLastAnnexNumber(int lastAnnexNumber);

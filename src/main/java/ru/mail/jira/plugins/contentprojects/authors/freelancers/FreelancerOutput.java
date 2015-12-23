@@ -34,7 +34,7 @@ public class FreelancerOutput {
         this.contractType = freelancer.getContractType().toString();
         this.inn = freelancer.getInn();
         this.snils = freelancer.getSnils();
-        this.worksName = freelancer.getWorksName();
+        this.worksName = freelancer.getWorksNames();
         this.lastAnnexNumber = String.valueOf(freelancer.getLastAnnexNumber());
     }
 }

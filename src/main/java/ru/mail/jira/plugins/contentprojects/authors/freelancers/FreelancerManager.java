@@ -88,7 +88,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksName(worksName);
+                freelancer.setWorksNames(worksName);
                 freelancer.setLastAnnexNumber(lastAnnexNumber);
                 freelancer.setDeleted(false);
                 freelancer.save();
@@ -109,7 +109,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksName(worksName);
+                freelancer.setWorksNames(worksName);
                 freelancer.setLastAnnexNumber(lastAnnexNumber);
                 freelancer.save();
                 return null;
