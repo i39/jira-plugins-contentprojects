@@ -25,7 +25,7 @@
                     $('#contentprojects-dialog-contract-type').val(result.contractType).change();
                     $('#contentprojects-dialog-inn').val(result.inn);
                     $('#contentprojects-dialog-snils').val(result.snils);
-                    $('#contentprojects-dialog-works-name').val(result.worksName);
+                    $('#contentprojects-dialog-works-names').val(result.worksNames);
                     $('#contentprojects-dialog-last-annex-number').val(result.lastAnnexNumber);
                     AJS.dialog2('#contentprojects-dialog').show();
                 },
@@ -70,7 +70,7 @@
             var contractTypeText = $('#contentprojects-dialog-contract-type').find('option:selected').text();
             var inn = $('#contentprojects-dialog-inn').val();
             var snils = $('#contentprojects-dialog-snils').val();
-            var worksName = $('#contentprojects-dialog-works-name').val();
+            var worksNames = $('#contentprojects-dialog-works-names').val();
             var lastAnnexNumber = $('#contentprojects-dialog-last-annex-number').val();
 
             if (id) {
@@ -85,7 +85,7 @@
                         type: contractType,
                         inn: inn,
                         snils: snils,
-                        worksName: worksName,
+                        worksNames: worksNames,
                         lastAnnexNumber: lastAnnexNumber
                     },
                     success: function () {
@@ -99,7 +99,7 @@
                         $tr.find('.contentprojects-freelancer-contract-type').text(contractTypeText);
                         $tr.find('.contentprojects-freelancer-inn').text(inn);
                         $tr.find('.contentprojects-freelancer-snils').text(snils);
-                        $tr.find('.contentprojects-freelancer-works-name').text(worksName);
+                        $tr.find('.contentprojects-freelancer-works-names').text(worksNames);
                         $tr.find('.contentprojects-freelancer-last-annex-number').text(lastAnnexNumber);
                     },
                     error: handleCreateAndUpdateError
@@ -116,7 +116,7 @@
                         type: contractType,
                         inn: inn,
                         snils: snils,
-                        worksName: worksName,
+                        worksNames: worksNames,
                         lastAnnexNumber: lastAnnexNumber
                     },
                     success: function (result) {
@@ -131,7 +131,7 @@
                         html += '<td class="contentprojects-freelancer-contract-type">' + contractTypeText + '</td>';
                         html += '<td class="contentprojects-freelancer-inn">' + inn + '</td>';
                         html += '<td class="contentprojects-freelancer-snils">' + snils + '</td>';
-                        html += '<td class="contentprojects-freelancer-works-name">' + worksName + '</td>';
+                        html += '<td class="contentprojects-freelancer-works-names">' + worksNames + '</td>';
                         html += '<td class="contentprojects-freelancer-last-annex-number">' + lastAnnexNumber + '</td>';
                         html += '<td>';
                         html += '<ul class="operations-list">';

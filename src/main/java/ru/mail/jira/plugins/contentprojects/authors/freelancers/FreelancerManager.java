@@ -76,7 +76,7 @@ public class FreelancerManager {
             throw new RestFieldException(i18nHelper.getText("ru.mail.jira.plugins.contentprojects.authors.freelancers.error.invalidSnils"), "snils");
     }
 
-    public int createFreelancer(final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksName, final int lastAnnexNumber) {
+    public int createFreelancer(final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksNames, final int lastAnnexNumber) {
         validateFreelancerParams(-1, fullName, contractDate, contractType, inn, snils);
         return ao.executeInTransaction(new TransactionCallback<Integer>() {
             @Override
@@ -88,7 +88,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksNames(worksName);
+                freelancer.setWorksNames(worksNames);
                 freelancer.setLastAnnexNumber(lastAnnexNumber);
                 freelancer.setDeleted(false);
                 freelancer.save();
@@ -97,7 +97,7 @@ public class FreelancerManager {
         });
     }
 
-    public void updateFreelancer(final int id, final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksName, final int lastAnnexNumber) {
+    public void updateFreelancer(final int id, final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksNames, final int lastAnnexNumber) {
         validateFreelancerParams(id, fullName, contractDate, contractType, inn, snils);
         ao.executeInTransaction(new TransactionCallback<Void>() {
             @Override
@@ -109,7 +109,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksNames(worksName);
+                freelancer.setWorksNames(worksNames);
                 freelancer.setLastAnnexNumber(lastAnnexNumber);
                 freelancer.save();
                 return null;

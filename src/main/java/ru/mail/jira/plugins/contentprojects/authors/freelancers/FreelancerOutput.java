@@ -22,7 +22,7 @@ public class FreelancerOutput {
     @XmlElement
     private String snils;
     @XmlElement
-    private String worksName;
+    private String worksNames;
     @XmlElement
     private String lastAnnexNumber;
 
@@ -34,7 +34,7 @@ public class FreelancerOutput {
         this.contractType = freelancer.getContractType().toString();
         this.inn = freelancer.getInn();
         this.snils = freelancer.getSnils();
-        this.worksName = freelancer.getWorksNames();
+        this.worksNames = freelancer.getWorksNames();
         this.lastAnnexNumber = String.valueOf(freelancer.getLastAnnexNumber());
     }
 }
