@@ -19,7 +19,6 @@ import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.query.Query;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.commons.LocalUtils;
 import ru.mail.jira.plugins.commons.RestExecutor;
@@ -48,12 +47,6 @@ import java.util.*;
 @Path("/createActs")
 @Produces({MediaType.APPLICATION_JSON})
 public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
-    private final DateFormat OPTION_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM yyyy"), LocalUtils.MONTH_NAMES_NOMINATIVE);
-    private final DateFormat DAY_OF_THE_MONTH_FORMAT = new SimpleDateFormat("dd");
-    private final DateFormat MONTH_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
-    private final DateFormat YEAR_FORMAT = new SimpleDateFormat("yy");
-    private final DateFormat DATE_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("dd MMMM yyyy"), LocalUtils.MONTH_NAMES_GENITIVE);
-
     private final FreelancerManager freelancerManager;
     private final IssueLinkService issueLinkService;
     private final IssueService issueService;
@@ -116,32 +109,21 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
 
     private void buildAvailableDates() throws ParseException {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(OPTION_FORMAT.parse(option.getValue()));
+        DateFormat option_format = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM yyyy"), LocalUtils.MONTH_NAMES_NOMINATIVE);
+        calendar.setTime(option_format.parse(option.getValue()));
 
         availableActDates = new ArrayList<Date>();
         availableAnnexDates = new ArrayList<Date>();
         for (int day = 15; day <= 31; day++) {
             calendar.set(Calendar.DAY_OF_MONTH, day);
 
-            int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
             if (calendar.get(Calendar.DAY_OF_MONTH) != day)
                 break;
-            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            if (LocalUtils.isWeekend(calendar))
+                continue;
+            if (LocalUtils.isHoliday(calendar))
                 continue;
 
-            int month = calendar.get(Calendar.MONTH);
-            if (month == Calendar.JANUARY && dayOfMonth < 9)
-                continue;
-            if (month == Calendar.FEBRUARY && dayOfMonth == 23)
-                continue;
-            if (month == Calendar.MARCH && dayOfMonth == 8)
-                continue;
-            if (month == Calendar.MAY && (dayOfMonth == 1 || dayOfMonth == 9))
-                continue;
-            if (month == Calendar.JUNE && dayOfMonth == 12)
-                continue;
-            if (month == Calendar.NOVEMBER && dayOfMonth == 4)
-                continue;
             if (day <= 15)
                 availableAnnexDates.add(calendar.getTime());
             else if (day >= 15)
@@ -159,15 +141,18 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
     }
 
     private JSONObject getArticleContractJson(Freelancer freelancer, CollectedFreelancerData collectedFreelancerData, Date paymentActDate, Project project) throws Exception {
+        DateFormat dayOfTheMonthFormat = new SimpleDateFormat("dd");
+        DateFormat monthFormat = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
+        DateFormat yearFormat = new SimpleDateFormat("yy");
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
-                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
-                MONTH_FORMAT.format(freelancer.getContractDate()),
-                YEAR_FORMAT.format(freelancer.getContractDate()),
-                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
-                MONTH_FORMAT.format(paymentActDate.getTime()),
-                YEAR_FORMAT.format(paymentActDate.getTime()),
+                dayOfTheMonthFormat.format(freelancer.getContractDate()),
+                monthFormat.format(freelancer.getContractDate()),
+                yearFormat.format(freelancer.getContractDate()),
+                dayOfTheMonthFormat.format(paymentActDate.getTime()),
+                monthFormat.format(paymentActDate.getTime()),
+                yearFormat.format(paymentActDate.getTime()),
                 collectedFreelancerData.issueSummaries.size(),
                 StringUtils.join(collectedFreelancerData.issueSummaries, "\n"),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
@@ -180,15 +165,18 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
     }
 
     private JSONObject getImagesContractJson(Freelancer freelancer, CollectedFreelancerData collectedFreelancerData, Date paymentActDate, Project project) throws Exception {
+        DateFormat dayOfTheMonthFormat = new SimpleDateFormat("dd");
+        DateFormat monthFormat = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
+        DateFormat yearFormat = new SimpleDateFormat("yy");
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
-                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
-                MONTH_FORMAT.format(freelancer.getContractDate()),
-                YEAR_FORMAT.format(freelancer.getContractDate()),
-                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
-                MONTH_FORMAT.format(paymentActDate.getTime()),
-                YEAR_FORMAT.format(paymentActDate.getTime()),
+                dayOfTheMonthFormat.format(freelancer.getContractDate()),
+                monthFormat.format(freelancer.getContractDate()),
+                yearFormat.format(freelancer.getContractDate()),
+                dayOfTheMonthFormat.format(paymentActDate.getTime()),
+                monthFormat.format(paymentActDate.getTime()),
+                yearFormat.format(paymentActDate.getTime()),
                 String.format(new Locale("ru"), "%,d", collectedFreelancerData.totalImages),
                 StringUtils.join(collectedFreelancerData.issueDescriptions, "\n"),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
@@ -201,38 +189,45 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
     }
 
     private JSONObject getCustomOrderContractJson(Freelancer freelancer, CollectedFreelancerData collectedFreelancerData, Date paymentActDate, Date paymentAnnexDate, Project project) throws Exception {
+        DateFormat dayOfTheMonthFormat = new SimpleDateFormat("dd");
+        DateFormat monthFormat = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
+        DateFormat yearFormat = new SimpleDateFormat("yy");
+        DateFormat dateFormat = LocalUtils.updateMonthNames(new SimpleDateFormat("dd MMMM yyyy"), LocalUtils.MONTH_NAMES_GENITIVE);
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
                 String.valueOf(collectedFreelancerData.lastAnnexNumber++),
-                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
-                MONTH_FORMAT.format(freelancer.getContractDate()),
-                YEAR_FORMAT.format(freelancer.getContractDate()),
-                DATE_FORMAT.format(paymentAnnexDate.getTime()),
+                dayOfTheMonthFormat.format(freelancer.getContractDate()),
+                monthFormat.format(freelancer.getContractDate()),
+                yearFormat.format(freelancer.getContractDate()),
+                dateFormat.format(paymentAnnexDate.getTime()),
                 StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
                 project.getName().substring(4),
                 freelancer.getWorksNames(),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
-                DATE_FORMAT.format(paymentActDate.getTime())
+                dateFormat.format(paymentActDate.getTime())
         ));
         return json;
     }
 
     private JSONObject getContractorContractJson(Freelancer freelancer, CollectedFreelancerData collectedFreelancerData, Date paymentActDate, Date paymentAnnexDate, Project project) throws Exception {
+        DateFormat dayOfTheMonthFormat = new SimpleDateFormat("dd");
+        DateFormat monthFormat = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
+        DateFormat yearFormat = new SimpleDateFormat("yy");
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
                 String.valueOf(collectedFreelancerData.lastAnnexNumber++),
-                DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
-                MONTH_FORMAT.format(freelancer.getContractDate()),
-                YEAR_FORMAT.format(freelancer.getContractDate()),
-                DAY_OF_THE_MONTH_FORMAT.format(paymentAnnexDate.getTime()),
-                MONTH_FORMAT.format(paymentAnnexDate.getTime()),
-                YEAR_FORMAT.format(paymentAnnexDate.getTime()),
+                dayOfTheMonthFormat.format(freelancer.getContractDate()),
+                monthFormat.format(freelancer.getContractDate()),
+                yearFormat.format(freelancer.getContractDate()),
+                dayOfTheMonthFormat.format(paymentAnnexDate.getTime()),
+                monthFormat.format(paymentAnnexDate.getTime()),
+                yearFormat.format(paymentAnnexDate.getTime()),
                 StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
-                DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
-                MONTH_FORMAT.format(paymentActDate.getTime()),
-                YEAR_FORMAT.format(paymentActDate.getTime()),
+                dayOfTheMonthFormat.format(paymentActDate.getTime()),
+                monthFormat.format(paymentActDate.getTime()),
+                yearFormat.format(paymentActDate.getTime()),
                 freelancer.getWorksNames(),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
                 project.getName().substring(4)
@@ -240,13 +235,25 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         return json;
     }
 
-    private Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> prepareIssues() throws Exception {
+    class CollectedPreparedIssueData {
+        IssueService.CreateValidationResult createValidationResult;
+        Freelancer freelancer;
+        CollectedFreelancerData collectedFreelancerData;
+
+        public CollectedPreparedIssueData(IssueService.CreateValidationResult createValidationResult, Freelancer freelancer, CollectedFreelancerData collectedFreelancerData) {
+            this.createValidationResult = createValidationResult;
+            this.freelancer = freelancer;
+            this.collectedFreelancerData = collectedFreelancerData;
+        }
+    }
+
+    private Collection<CollectedPreparedIssueData> prepareIssues() throws Exception {
         CustomField paymentMonthCf = CommonUtils.getCustomField(Consts.PAYMENT_MONTH_CF_ID);
         CustomField costCf = CommonUtils.getCustomField(Consts.COST_CF_ID);
         CustomField numberImagesCf = CommonUtils.getCustomField(Consts.IMAGES_NUMBER_CF_ID);
         CustomField textAuthorCf = CommonUtils.getCustomField(Consts.TEXT_AUTHOR_CF_ID);
 
-        Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> result = new ArrayList<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>>();
+        Collection<CollectedPreparedIssueData> result = new ArrayList<CollectedPreparedIssueData>();
 
         buildAvailableDates();
         Iterator<Date> possibleActDatesIterator = availableActDates.iterator();
@@ -323,7 +330,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                     IssueService.CreateValidationResult createValidationResult = issueService.validateCreate(getLoggedInApplicationUser().getDirectoryUser(), issueInputParameters);
 
                     if (createValidationResult.isValid()) {
-                        result.add(Pair.of(createValidationResult, Pair.of(e.getKey(), e.getValue())));
+                        result.add(new CollectedPreparedIssueData(createValidationResult, e.getKey(), e.getValue()));
                     } else {
                         addErrorMessages(createValidationResult.getErrorCollection().getErrorMessages());
                         addErrorMessages(createValidationResult.getErrorCollection().getErrors().values());
@@ -346,19 +353,19 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         if (hasAnyErrors())
             return INPUT;
 
-        Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> preparedIssues = prepareIssues();
+        Collection<CollectedPreparedIssueData> preparedIssues = prepareIssues();
         if (!hasAnyErrors() && preparedIssues.isEmpty())
             addErrorMessage(getText("issuenav.results.none.found"));
         if (hasAnyErrors())
             return INPUT;
 
         Collection<String> issueKeys = new ArrayList<String>(preparedIssues.size());
-        for (Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>> preparationResult : preparedIssues) {
-            IssueService.IssueResult issueResult = issueService.create(getLoggedInApplicationUser().getDirectoryUser(), preparationResult.getLeft());
+        for (CollectedPreparedIssueData preparationResult : preparedIssues) {
+            IssueService.IssueResult issueResult = issueService.create(getLoggedInApplicationUser().getDirectoryUser(), preparationResult.createValidationResult);
             if (issueResult.isValid()) {
-                freelancerManager.updateLastAnnexNumber(preparationResult.getRight().getLeft().getID(), preparationResult.getRight().getRight().lastAnnexNumber);
+                freelancerManager.updateLastAnnexNumber(preparationResult.freelancer.getID(), preparationResult.collectedFreelancerData.lastAnnexNumber);
 
-                IssueLinkService.AddIssueLinkValidationResult addIssueLinkValidationResult = issueLinkService.validateAddIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), issueResult.getIssue(), Consts.PAYMENT_ACT_LINK_TYPE, preparationResult.getRight().getRight().issueKeys);
+                IssueLinkService.AddIssueLinkValidationResult addIssueLinkValidationResult = issueLinkService.validateAddIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), issueResult.getIssue(), Consts.PAYMENT_ACT_LINK_TYPE, preparationResult.collectedFreelancerData.issueKeys);
                 if (addIssueLinkValidationResult.isValid()) {
                     issueLinkService.addIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), addIssueLinkValidationResult);
                 } else {
