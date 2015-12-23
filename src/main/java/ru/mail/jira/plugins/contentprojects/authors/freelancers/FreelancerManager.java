@@ -117,12 +117,12 @@ public class FreelancerManager {
         });
     }
 
-    public void incrementAnnexNumber(final int id) {
+    public void updateLastAnnexNumber(final int id, final int lastAnnexNumber) {
         ao.executeInTransaction(new TransactionCallback<Void>() {
             @Override
             public Void doInTransaction() {
                 Freelancer freelancer = getFreelancer(id);
-                freelancer.setLastAnnexNumber(freelancer.getLastAnnexNumber() + 1);
+                freelancer.setLastAnnexNumber(lastAnnexNumber);
                 freelancer.save();
                 return null;
             }

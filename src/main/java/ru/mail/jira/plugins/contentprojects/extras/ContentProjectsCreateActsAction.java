@@ -155,6 +155,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         Collection<String> issueDescriptions = new ArrayList<String>();
         double totalCost = 0;
         int totalImages = 0;
+        int lastAnnexNumber = 0;
     }
 
     private JSONObject getArticleContractJson(Freelancer freelancer, CollectedFreelancerData collectedFreelancerData, Date paymentActDate, Project project) throws Exception {
@@ -203,7 +204,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
-                String.valueOf(freelancer.getLastAnnexNumber() + 1),
+                String.valueOf(collectedFreelancerData.lastAnnexNumber++),
                 DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
                 MONTH_FORMAT.format(freelancer.getContractDate()),
                 YEAR_FORMAT.format(freelancer.getContractDate()),
@@ -221,7 +222,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID));
         json.put("variableValues", Arrays.<Object>asList(
-                String.valueOf(freelancer.getLastAnnexNumber() + 1),
+                String.valueOf(collectedFreelancerData.lastAnnexNumber++),
                 DAY_OF_THE_MONTH_FORMAT.format(freelancer.getContractDate()),
                 MONTH_FORMAT.format(freelancer.getContractDate()),
                 YEAR_FORMAT.format(freelancer.getContractDate()),
@@ -239,13 +240,13 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         return json;
     }
 
-    private Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> prepareIssues() throws Exception {
+    private Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> prepareIssues() throws Exception {
         CustomField paymentMonthCf = CommonUtils.getCustomField(Consts.PAYMENT_MONTH_CF_ID);
         CustomField costCf = CommonUtils.getCustomField(Consts.COST_CF_ID);
         CustomField numberImagesCf = CommonUtils.getCustomField(Consts.IMAGES_NUMBER_CF_ID);
         CustomField textAuthorCf = CommonUtils.getCustomField(Consts.TEXT_AUTHOR_CF_ID);
 
-        Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> result = new ArrayList<Pair<IssueService.CreateValidationResult, Collection<String>>>();
+        Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> result = new ArrayList<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>>();
 
         buildAvailableDates();
         Iterator<Date> possibleActDatesIterator = availableActDates.iterator();
@@ -285,6 +286,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                     collectedFreelancerData.totalCost += (Double) issue.getCustomFieldValue(costCf);
                     if (issue.getCustomFieldValue(numberImagesCf) != null)
                         collectedFreelancerData.totalImages += (Integer) issue.getCustomFieldValue(numberImagesCf);
+                    collectedFreelancerData.lastAnnexNumber = freelancer.getLastAnnexNumber();
                 }
 
                 for (Map.Entry<Freelancer, CollectedFreelancerData> e : freelancerDataMap.entrySet()) {
@@ -301,14 +303,10 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                         json = getArticleContractJson(e.getKey(), e.getValue(), paymentActDate, project);
                     else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID))
                         json = getImagesContractJson(e.getKey(), e.getValue(), paymentActDate, project);
-                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID)) {
+                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID))
                         json = getCustomOrderContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
-                        freelancerManager.incrementAnnexNumber(e.getKey().getID());
-                    }
-                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID)) {
+                    else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID))
                         json = getContractorContractJson(e.getKey(), e.getValue(), paymentActDate, paymentAnnexDate, project);
-                        freelancerManager.incrementAnnexNumber(e.getKey().getID());
-                    }
 
                     IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
                     issueInputParameters.setProjectId(Consts.PAYMENT_ACT_PROJECT_ID);
@@ -325,7 +323,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                     IssueService.CreateValidationResult createValidationResult = issueService.validateCreate(getLoggedInApplicationUser().getDirectoryUser(), issueInputParameters);
 
                     if (createValidationResult.isValid()) {
-                        result.add(Pair.of(createValidationResult, e.getValue().issueKeys));
+                        result.add(Pair.of(createValidationResult, Pair.of(e.getKey(), e.getValue())));
                     } else {
                         addErrorMessages(createValidationResult.getErrorCollection().getErrorMessages());
                         addErrorMessages(createValidationResult.getErrorCollection().getErrors().values());
@@ -348,17 +346,19 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         if (hasAnyErrors())
             return INPUT;
 
-        Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> preparedIssues = prepareIssues();
+        Collection<Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>>> preparedIssues = prepareIssues();
         if (!hasAnyErrors() && preparedIssues.isEmpty())
             addErrorMessage(getText("issuenav.results.none.found"));
         if (hasAnyErrors())
             return INPUT;
 
         Collection<String> issueKeys = new ArrayList<String>(preparedIssues.size());
-        for (Pair<IssueService.CreateValidationResult, Collection<String>> preparationResult : preparedIssues) {
+        for (Pair<IssueService.CreateValidationResult, Pair<Freelancer, CollectedFreelancerData>> preparationResult : preparedIssues) {
             IssueService.IssueResult issueResult = issueService.create(getLoggedInApplicationUser().getDirectoryUser(), preparationResult.getLeft());
             if (issueResult.isValid()) {
-                IssueLinkService.AddIssueLinkValidationResult addIssueLinkValidationResult = issueLinkService.validateAddIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), issueResult.getIssue(), Consts.PAYMENT_ACT_LINK_TYPE, preparationResult.getRight());
+                freelancerManager.updateLastAnnexNumber(preparationResult.getRight().getLeft().getID(), preparationResult.getRight().getRight().lastAnnexNumber);
+
+                IssueLinkService.AddIssueLinkValidationResult addIssueLinkValidationResult = issueLinkService.validateAddIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), issueResult.getIssue(), Consts.PAYMENT_ACT_LINK_TYPE, preparationResult.getRight().getRight().issueKeys);
                 if (addIssueLinkValidationResult.isValid()) {
                     issueLinkService.addIssueLinks(getLoggedInApplicationUser().getDirectoryUser(), addIssueLinkValidationResult);
                 } else {
