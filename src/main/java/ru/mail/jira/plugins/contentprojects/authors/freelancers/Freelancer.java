@@ -28,9 +28,6 @@ public interface Freelancer extends Entity {
     String getWorksNames();
     void setWorksNames(String worksNames);
 
-    int getLastAnnexNumber();
-    void setLastAnnexNumber(int lastAnnexNumber);
-
     boolean isDeleted();
     void setDeleted(boolean deleted);
 }

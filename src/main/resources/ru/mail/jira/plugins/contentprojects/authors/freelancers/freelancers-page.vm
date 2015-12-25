@@ -34,7 +34,6 @@
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.inn" )</th>
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.snils" )</th>
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames" )</th>
-                    <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.lastAnnexNumber" )</th>
                     <th>$i18n.getText( "common.words.operations" )</th>
                 </tr>
                 </thead>
@@ -48,7 +47,6 @@
                         <td class="contentprojects-freelancer-inn">$!freelancer.inn</td>
                         <td class="contentprojects-freelancer-snils">$!freelancer.snils</td>
                         <td class="contentprojects-freelancer-works-names">$!freelancer.worksNames</td>
-                        <td class="contentprojects-freelancer-last-annex-number">$!freelancer.lastAnnexNumber</td>
                         <td>
                             <ul class="operations-list">
                                 <li><a href="#" class="contentprojects-freelancer-edit">$i18n.getText( "common.forms.edit" )</a></li>
@@ -125,17 +123,8 @@
                     $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames" )
                 </label>
                 <textarea class="textarea" type="text" id="contentprojects-dialog-works-names"></textarea>
-                <div class="description"> $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames.description" )</div>
+                <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames.description" )</div>
                 <div id="contentprojects-dialog-works-names-error" class="error"></div>
-            </div>
-            <div class="field-group">
-                <label for="contentprojects-dialog-last-annex-number">
-                    $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.lastAnnexNumber" )
-                    <span id="contentprojects-dialog-last-annex-number-req" class="aui-icon icon-required hidden"></span>
-                </label>
-                <input class="text" type="text" id="contentprojects-dialog-last-annex-number" maxlength="254" />
-                <div class="description"> $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.lastAnnexNumber.description" )</div>
-                <div id="contentprojects-dialog-last-annex-number-error" class="error"></div>
             </div>
             <input class="hidden" type="submit" />
         </form>

@@ -46,7 +46,7 @@ public class Consts {
     public static final List<Long> SCROLL_TOUCH_CF_IDS = Arrays.asList(28000L, 28001L, 28002L, 28003L, 28004L);
     public static final long ENGAGEMENT_RATE = 29901;
     public static final long ENGAGEMENT_RATE_TOUCH = 29902;
-    public static final long IMAGES_NUMBER_CF_ID = 30301; //todo: change to a production value
+    public static final long IMAGES_NUMBER_CF_ID = 31400;
 
     public static final String NEWS_USER_NAME = "s.paranjko@mail.msk";
     public static final long NEWS_ISSUE_TYPE_ID = 13904;
@@ -61,10 +61,10 @@ public class Consts {
     public static final long PAYMENT_ACT_PROJECT_CF_ID = 11542;
     public static final Map<Long, String> PAYMENT_ACT_PROJECT_VALUE_MAP = new HashMap<Long, String>();
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CF_ID = 26000;
-    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID = "1"; //todo: change to a production value
-    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID = "2"; //todo: change to a production value
-    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID = "4"; //todo: change to a production value
-    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID = "10000"; //todo: change to a production value
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID = "12900";
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID = "16500";
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID = "16502";
+    public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID = "16501";
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 52; //todo: change to a production value
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 53; //todo: change to a production value
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 55; //todo: change to a production value

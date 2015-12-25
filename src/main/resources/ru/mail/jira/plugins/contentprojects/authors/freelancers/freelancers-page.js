@@ -26,7 +26,6 @@
                     $('#contentprojects-dialog-inn').val(result.inn);
                     $('#contentprojects-dialog-snils').val(result.snils);
                     $('#contentprojects-dialog-works-names').val(result.worksNames);
-                    $('#contentprojects-dialog-last-annex-number').val(result.lastAnnexNumber);
                     AJS.dialog2('#contentprojects-dialog').show();
                 },
                 error: function(resp) {
@@ -71,7 +70,7 @@
             var inn = $('#contentprojects-dialog-inn').val();
             var snils = $('#contentprojects-dialog-snils').val();
             var worksNames = $('#contentprojects-dialog-works-names').val();
-            var lastAnnexNumber = $('#contentprojects-dialog-last-annex-number').val();
+            console.log(worksNames);
 
             if (id) {
                 $.ajax({
@@ -85,8 +84,7 @@
                         type: contractType,
                         inn: inn,
                         snils: snils,
-                        worksNames: worksNames,
-                        lastAnnexNumber: lastAnnexNumber
+                        worksNames: worksNames
                     },
                     success: function () {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -100,7 +98,6 @@
                         $tr.find('.contentprojects-freelancer-inn').text(inn);
                         $tr.find('.contentprojects-freelancer-snils').text(snils);
                         $tr.find('.contentprojects-freelancer-works-names').text(worksNames);
-                        $tr.find('.contentprojects-freelancer-last-annex-number').text(lastAnnexNumber);
                     },
                     error: handleCreateAndUpdateError
                 });
@@ -116,8 +113,7 @@
                         type: contractType,
                         inn: inn,
                         snils: snils,
-                        worksNames: worksNames,
-                        lastAnnexNumber: lastAnnexNumber
+                        worksNames: worksNames
                     },
                     success: function (result) {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -132,7 +128,6 @@
                         html += '<td class="contentprojects-freelancer-inn">' + inn + '</td>';
                         html += '<td class="contentprojects-freelancer-snils">' + snils + '</td>';
                         html += '<td class="contentprojects-freelancer-works-names">' + worksNames + '</td>';
-                        html += '<td class="contentprojects-freelancer-last-annex-number">' + lastAnnexNumber + '</td>';
                         html += '<td>';
                         html += '<ul class="operations-list">';
                         html += '<li><a href="#" class="contentprojects-freelancer-edit">' + AJS.I18n.getText('common.forms.edit') + '</a></li>&nbsp;';
