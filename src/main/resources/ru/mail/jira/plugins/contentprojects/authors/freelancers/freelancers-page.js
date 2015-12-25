@@ -25,6 +25,7 @@
                     $('#contentprojects-dialog-contract-type').val(result.contractType).change();
                     $('#contentprojects-dialog-inn').val(result.inn);
                     $('#contentprojects-dialog-snils').val(result.snils);
+                    $('#contentprojects-dialog-work-names').val(result.workNames);
                     AJS.dialog2('#contentprojects-dialog').show();
                 },
                 error: function(resp) {
@@ -68,6 +69,7 @@
             var contractTypeText = $('#contentprojects-dialog-contract-type').find('option:selected').text();
             var inn = $('#contentprojects-dialog-inn').val();
             var snils = $('#contentprojects-dialog-snils').val();
+            var workNames = $('#contentprojects-dialog-work-names').val();
 
             if (id) {
                 $.ajax({
@@ -80,7 +82,8 @@
                         contractDate: contractDate,
                         type: contractType,
                         inn: inn,
-                        snils: snils
+                        snils: snils,
+                        workNames: workNames
                     },
                     success: function () {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -93,6 +96,7 @@
                         $tr.find('.contentprojects-freelancer-contract-type').text(contractTypeText);
                         $tr.find('.contentprojects-freelancer-inn').text(inn);
                         $tr.find('.contentprojects-freelancer-snils').text(snils);
+                        $tr.find('.contentprojects-freelancer-work-names').text(workNames);
                     },
                     error: handleCreateAndUpdateError
                 });
@@ -107,7 +111,8 @@
                         contractDate: contractDate,
                         type: contractType,
                         inn: inn,
-                        snils: snils
+                        snils: snils,
+                        workNames: workNames
                     },
                     success: function (result) {
                         AJS.dialog2('#contentprojects-dialog').hide();
@@ -121,6 +126,7 @@
                         html += '<td class="contentprojects-freelancer-contract-type">' + contractTypeText + '</td>';
                         html += '<td class="contentprojects-freelancer-inn">' + inn + '</td>';
                         html += '<td class="contentprojects-freelancer-snils">' + snils + '</td>';
+                        html += '<td class="contentprojects-freelancer-work-names">' + workNames + '</td>';
                         html += '<td>';
                         html += '<ul class="operations-list">';
                         html += '<li><a href="#" class="contentprojects-freelancer-edit">' + AJS.I18n.getText('common.forms.edit') + '</a></li>&nbsp;';
@@ -152,7 +158,7 @@
             $('.contentprojects-dialog-error-field').removeClass('contentprojects-dialog-error-field');
             $(this).find('.error').empty();
 
-            $(this).find('input').val('');
+            $(this).find('input, textarea').val('');
             var $contractType = $('#contentprojects-dialog-contract-type');
             $contractType.val($contractType.find('option:first').val()).change();
         });
