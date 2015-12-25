@@ -314,8 +314,8 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                     issueInputParameters.setIssueTypeId(String.valueOf(Consts.PAYMENT_ACT_ISSUE_TYPE_ID));
                     issueInputParameters.setReporterId(getLoggedInApplicationUser().getName());
                     issueInputParameters.setAssigneeId(getLoggedInApplicationUser().getName());
-                    issueInputParameters.setSummary(String.format(new Locale("ru"), "%s, %s, %s, %,d \u0440\u0443\u0431", getText("ru.mail.jira.plugins.contentprojects.extras.createActs.paymentAct"), e.getKey().getFullName(), option.getValue(), (int) e.getValue().totalCost));
-                    issueInputParameters.setDescription(getText("ru.mail.jira.plugins.contentprojects.extras.createActs.paymentAct"));
+                    issueInputParameters.setSummary(String.format(new Locale("ru"), "%s, %s, %s, %,d \u0440\u0443\u0431", PAYMENT_ACT, e.getKey().getFullName(), option.getValue(), (int) e.getValue().totalCost));
+                    issueInputParameters.setDescription(PAYMENT_ACT);
                     issueInputParameters.setComponentIds(Consts.PAYMENT_ACT_COMPONENT_VALUE);
                     issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_LEGAL_ENTITY_CF_ID, Consts.PAYMENT_ACT_LEGAL_ENTITY_VALUE);
                     issueInputParameters.addCustomFieldValue(Consts.PAYMENT_ACT_CONTRAGENT_CF_ID, Consts.PAYMENT_ACT_CONTRAGENT_VALUE);
