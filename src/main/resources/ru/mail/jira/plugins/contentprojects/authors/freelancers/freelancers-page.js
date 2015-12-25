@@ -70,7 +70,6 @@
             var inn = $('#contentprojects-dialog-inn').val();
             var snils = $('#contentprojects-dialog-snils').val();
             var workNames = $('#contentprojects-dialog-work-names').val();
-            console.log(workNames);
 
             if (id) {
                 $.ajax({

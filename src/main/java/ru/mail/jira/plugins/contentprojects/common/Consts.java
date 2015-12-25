@@ -65,10 +65,10 @@ public class Consts {
     public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID = "16500";
     public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID = "16502";
     public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID = "16501";
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 52; //todo: change to a production value
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 53; //todo: change to a production value
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 55; //todo: change to a production value
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 54; //todo: change to a production value
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 52;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 53;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 57;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 58;
     public static final String PAYMENT_ACT_LINK_TYPE = "depends on";
 
     static {
