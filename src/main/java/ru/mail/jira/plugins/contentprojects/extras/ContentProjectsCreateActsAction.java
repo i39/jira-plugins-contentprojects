@@ -196,7 +196,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 DATE_FORMAT.format(paymentAnnexDate.getTime()),
                 StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
                 project.getName().substring(4),
-                freelancer.getWorksNames(),
+                freelancer.getWorkNames(),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
                 DATE_FORMAT.format(paymentActDate.getTime())
         ));
@@ -220,7 +220,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
                 MONTH_FORMAT.format(paymentActDate.getTime()),
                 YEAR_FORMAT.format(paymentActDate.getTime()),
-                freelancer.getWorksNames(),
+                freelancer.getWorkNames(),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
                 project.getName().substring(4)
         ));

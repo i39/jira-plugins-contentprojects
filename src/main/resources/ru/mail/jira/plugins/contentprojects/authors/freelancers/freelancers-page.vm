@@ -33,7 +33,7 @@
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.contractType" )</th>
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.inn" )</th>
                     <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.snils" )</th>
-                    <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames" )</th>
+                    <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.workNames" )</th>
                     <th>$i18n.getText( "common.words.operations" )</th>
                 </tr>
                 </thead>
@@ -46,7 +46,7 @@
                         <td class="contentprojects-freelancer-contract-type">$i18n.getText( $freelancer.contractType.labelKey )</td>
                         <td class="contentprojects-freelancer-inn">$!freelancer.inn</td>
                         <td class="contentprojects-freelancer-snils">$!freelancer.snils</td>
-                        <td class="contentprojects-freelancer-works-names">$!freelancer.worksNames</td>
+                        <td class="contentprojects-freelancer-work-names">$!freelancer.workNames</td>
                         <td>
                             <ul class="operations-list">
                                 <li><a href="#" class="contentprojects-freelancer-edit">$i18n.getText( "common.forms.edit" )</a></li>
@@ -119,12 +119,12 @@
                 <div id="contentprojects-dialog-snils-error" class="error"></div>
             </div>
             <div class="field-group">
-                <label for="contentprojects-dialog-works-names">
-                    $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames" )
+                <label for="contentprojects-dialog-work-names">
+                    $i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.workNames" )
                 </label>
-                <textarea class="textarea" type="text" id="contentprojects-dialog-works-names"></textarea>
-                <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.worksNames.description" )</div>
-                <div id="contentprojects-dialog-works-names-error" class="error"></div>
+                <textarea class="textarea" type="text" id="contentprojects-dialog-work-names"></textarea>
+                <div class="description">$i18n.getText( "ru.mail.jira.plugins.contentprojects.authors.freelancers.workNames.description" )</div>
+                <div id="contentprojects-dialog-work-names-error" class="error"></div>
             </div>
             <input class="hidden" type="submit" />
         </form>

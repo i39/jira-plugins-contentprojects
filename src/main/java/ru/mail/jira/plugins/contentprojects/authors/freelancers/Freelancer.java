@@ -25,8 +25,8 @@ public interface Freelancer extends Entity {
     String getSnils();
     void setSnils(String snils);
 
-    String getWorksNames();
-    void setWorksNames(String worksNames);
+    String getWorkNames();
+    void setWorkNames(String workNames);
 
     boolean isDeleted();
     void setDeleted(boolean deleted);

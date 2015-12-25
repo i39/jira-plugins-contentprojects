@@ -76,7 +76,7 @@ public class FreelancerManager {
             throw new RestFieldException(i18nHelper.getText("ru.mail.jira.plugins.contentprojects.authors.freelancers.error.invalidSnils"), "snils");
     }
 
-    public int createFreelancer(final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksNames) {
+    public int createFreelancer(final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String workNames) {
         validateFreelancerParams(-1, fullName, contractDate, contractType, inn, snils);
         return ao.executeInTransaction(new TransactionCallback<Integer>() {
             @Override
@@ -88,7 +88,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksNames(worksNames);
+                freelancer.setWorkNames(workNames);
                 freelancer.setDeleted(false);
                 freelancer.save();
                 return freelancer.getID();
@@ -96,7 +96,7 @@ public class FreelancerManager {
         });
     }
 
-    public void updateFreelancer(final int id, final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String worksNames) {
+    public void updateFreelancer(final int id, final String fullName, final String payeeName, final Date contractDate, final ContractType contractType, final String inn, final String snils, final String workNames) {
         validateFreelancerParams(id, fullName, contractDate, contractType, inn, snils);
         ao.executeInTransaction(new TransactionCallback<Void>() {
             @Override
@@ -108,7 +108,7 @@ public class FreelancerManager {
                 freelancer.setContractType(contractType);
                 freelancer.setInn(inn);
                 freelancer.setSnils(snils);
-                freelancer.setWorksNames(worksNames);
+                freelancer.setWorkNames(workNames);
                 freelancer.save();
                 return null;
             }
