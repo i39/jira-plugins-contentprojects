@@ -1,0 +1,8 @@
+#parse( "ru/mail/jira/plugins/contentprojects/issue/functions/macro.vm" )
+#customField( "goalField", $goalField )
+#counter( "counter", $counter )
+#customField( "urlField", $urlField )
+#customField( "publishingDateField", $publishingDateField )
+#numberOfDays( "numberOfDays", $numberOfDays )
+#if( $goalFormat )#textField( "goalFormat", $goalFormat )#{else}#textField( "goalFormat", "jse:{filter}" )#end
+#booleanField( "ignoreExceptions", $ignoreExceptions )

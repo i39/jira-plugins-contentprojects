@@ -53,3 +53,14 @@
 </tr>
 #end
 
+#macro( textField $id $value )
+<tr>
+    <td class="fieldLabelArea">
+        <label for="contentprojects-$id">$i18n.getText( "ru.mail.jira.plugins.contentprojects.issue.functions.$id" ):</label>
+    </td>
+    <td>
+        <input class="text" type="text" id="contentprojects-$id" name="$id" value="$value" maxlength="254" required="required" />
+    </td>
+</tr>
+#end
+
