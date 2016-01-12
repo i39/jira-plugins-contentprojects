@@ -5,3 +5,4 @@
 #customField( "publishingDateField", $publishingDateField )
 #numberOfDays( "numberOfDays", $numberOfDays )
 #if( $goalFormat )#textField( "goalFormat", $goalFormat )#{else}#textField( "goalFormat", "jse:{0}" )#end
+#booleanField( "ignoreExceptions", $ignoreExceptions )
