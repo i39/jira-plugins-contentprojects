@@ -40,8 +40,10 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
     public static final String OTHER_SEARCH_ENGINES_FIELD = "otherSearchEnginesField";
     public static final String TIME_FIELD = "timeField";
     public static final String URL_FIELD = "urlField";
+    public static final String GOAL_FIELD = "goalField";
     public static final String COUNTER = "counter";
     public static final String NUMBER_OF_DAYS = "numberOfDays";
+    public static final String GOAL_FORMAT = "goalFormat";
     public static final String IGNORE_EXCEPTIONS = "ignoreExceptions";
 
     private final CounterManager counterManager;
@@ -108,8 +110,10 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         velocityParams.put(OTHER_SEARCH_ENGINES_FIELD, functionDescriptor.getArgs().get(OTHER_SEARCH_ENGINES_FIELD));
         velocityParams.put(TIME_FIELD, functionDescriptor.getArgs().get(TIME_FIELD));
         velocityParams.put(URL_FIELD, functionDescriptor.getArgs().get(URL_FIELD));
+        velocityParams.put(GOAL_FIELD, functionDescriptor.getArgs().get(GOAL_FIELD));
         velocityParams.put(COUNTER, functionDescriptor.getArgs().get(COUNTER));
         velocityParams.put(NUMBER_OF_DAYS, functionDescriptor.getArgs().get(NUMBER_OF_DAYS));
+        velocityParams.put(GOAL_FORMAT, functionDescriptor.getArgs().get(GOAL_FORMAT));
         velocityParams.put(IGNORE_EXCEPTIONS, functionDescriptor.getArgs().get(IGNORE_EXCEPTIONS));
     }
 
@@ -150,7 +154,9 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         velocityParams.put(OTHER_SEARCH_ENGINES_FIELD, getCustomFieldName((String) velocityParams.get(OTHER_SEARCH_ENGINES_FIELD)));
         velocityParams.put(TIME_FIELD, getCustomFieldName((String) velocityParams.get(TIME_FIELD)));
         velocityParams.put(URL_FIELD, getCustomFieldName((String) velocityParams.get(URL_FIELD)));
+        velocityParams.put(GOAL_FIELD, getCounterName((String) velocityParams.get(GOAL_FIELD)));
         velocityParams.put(COUNTER, getCounterName((String) velocityParams.get(COUNTER)));
+        velocityParams.put(GOAL_FORMAT, getCounterName((String) velocityParams.get(GOAL_FORMAT)));
         velocityParams.put(IGNORE_EXCEPTIONS, getCounterName((String) velocityParams.get(IGNORE_EXCEPTIONS)));
     }
 
@@ -193,8 +199,10 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         addStringParam(descriptorParams, formParams, OTHER_SEARCH_ENGINES_FIELD);
         addStringParam(descriptorParams, formParams, TIME_FIELD);
         addStringParam(descriptorParams, formParams, URL_FIELD);
+        addStringParam(descriptorParams, formParams, GOAL_FIELD);
         addStringParam(descriptorParams, formParams, COUNTER);
         addIntegerParam(descriptorParams, formParams, NUMBER_OF_DAYS, 1, 30);
+        addStringParam(descriptorParams, formParams, GOAL_FORMAT);
         addBooleanParam(descriptorParams, formParams, IGNORE_EXCEPTIONS);
         return descriptorParams;
     }
