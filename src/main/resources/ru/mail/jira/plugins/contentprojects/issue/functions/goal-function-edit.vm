@@ -4,5 +4,5 @@
 #customField( "urlField", $urlField )
 #customField( "publishingDateField", $publishingDateField )
 #numberOfDays( "numberOfDays", $numberOfDays )
-#if( $goalFormat )#textField( "goalFormat", $goalFormat )#{else}#textField( "goalFormat", "jse:{0}" )#end
+#if( $goalFormat )#textField( "goalFormat", $goalFormat )#{else}#textField( "goalFormat", "jse:{filter}" )#end
 #booleanField( "ignoreExceptions", $ignoreExceptions )

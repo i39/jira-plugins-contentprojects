@@ -39,7 +39,7 @@ public class GoalFunction extends AbstractJiraFunctionProvider {
             String date = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
             calendar.add(Calendar.DATE, 1);
 
-            String response = new HttpSender("http://top.mail.ru/json/goals?id=%s&password=%s&period=0&date=%s&goal=%s", counterId, counterPassword, date, MessageFormat.format(goalFormat, filter)).sendGet();
+            String response = new HttpSender("http://top.mail.ru/json/goals?id=%s&password=%s&period=0&date=%s&goal=%s", counterId, counterPassword, date, goalFormat.replace("{filter}", filter)).sendGet();
             JSONObject json = new JSONObject(response);
             if (json.has("total2") && !json.isNull("total2"))
                 result += json.getLong("total2");
