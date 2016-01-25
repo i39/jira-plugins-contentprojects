@@ -67,8 +67,8 @@ public class Consts {
     public static final String PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TYPE_ID = "16501";
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 52;
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 53;
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 57;
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 58;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 59;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 60;
     public static final String PAYMENT_ACT_LINK_TYPE = "depends on";
 
     static {

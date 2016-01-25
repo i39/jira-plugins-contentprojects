@@ -197,7 +197,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
                 project.getName().substring(4),
                 freelancer.getWorkNames(),
-                String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
+                String.format(new Locale("ru"), "%.2f", collectedFreelancerData.totalCost),
                 DATE_FORMAT.format(paymentActDate.getTime())
         ));
         return json;
@@ -221,20 +221,12 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 MONTH_FORMAT.format(paymentActDate.getTime()),
                 YEAR_FORMAT.format(paymentActDate.getTime()),
                 freelancer.getWorkNames(),
+                String.format(new Locale("ru"), "%.2f", collectedFreelancerData.totalCost),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
+                String.format(new Locale("ru"), "%02d", (int) (collectedFreelancerData.totalCost * 100 % 100)),
                 project.getName().substring(4)
         ));
         return json;
-    }
-
-    class CollectedPreparedIssueData {
-        IssueService.CreateValidationResult createValidationResult;
-        CollectedFreelancerData collectedFreelancerData;
-
-        public CollectedPreparedIssueData(IssueService.CreateValidationResult createValidationResult, CollectedFreelancerData collectedFreelancerData) {
-            this.createValidationResult = createValidationResult;
-            this.collectedFreelancerData = collectedFreelancerData;
-        }
     }
 
     private Collection<Pair<IssueService.CreateValidationResult, Collection<String>>> prepareIssues() throws Exception {
