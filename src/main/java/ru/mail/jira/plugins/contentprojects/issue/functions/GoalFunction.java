@@ -14,7 +14,6 @@ import ru.mail.jira.plugins.contentprojects.configuration.Counter;
 import ru.mail.jira.plugins.contentprojects.configuration.CounterConfig;
 import ru.mail.jira.plugins.contentprojects.configuration.CounterManager;
 
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,7 +29,7 @@ public class GoalFunction extends AbstractJiraFunctionProvider {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
     }
 
-    private int getGoal(String filter, Date publishingDate, int numberOfDays, int counterId, String counterPassword, String goalFormat) throws Exception {
+    private int getGoal(String filter, Date publishingDate, int numberOfDays, int counterId, String counterPassword, String goalFormat, String goalParameter) throws Exception {
         int result = 0;
 
         Calendar calendar = Calendar.getInstance();
@@ -41,8 +40,8 @@ public class GoalFunction extends AbstractJiraFunctionProvider {
 
             String response = new HttpSender("http://top.mail.ru/json/goals?id=%s&password=%s&period=0&date=%s&goal=%s", counterId, counterPassword, date, goalFormat.replace("{filter}", filter)).sendGet();
             JSONObject json = new JSONObject(response);
-            if (json.has("total2") && !json.isNull("total2"))
-                result += json.getLong("total2");
+            if (json.has(goalParameter) && !json.isNull(goalParameter))
+                result += json.getLong(goalParameter);
         }
 
         return result;
@@ -58,6 +57,7 @@ public class GoalFunction extends AbstractJiraFunctionProvider {
         Counter counter = counterManager.getCounter(Integer.parseInt((String) args.get(AbstractFunctionFactory.COUNTER)));
         int numberOfDays = Integer.parseInt((String) args.get(AbstractFunctionFactory.NUMBER_OF_DAYS));
         String goalFormat = (String) args.get(AbstractFunctionFactory.GOAL_FORMAT);
+        String goalParameter = (String) args.get(AbstractFunctionFactory.GOAL_PARAMETER);
         boolean ignoreExceptions = Boolean.parseBoolean((String) args.get(AbstractFunctionFactory.IGNORE_EXCEPTIONS));
 
         CounterConfig counterConfig = counterManager.getCounterConfig(counter, issue.getProjectObject());
@@ -72,7 +72,7 @@ public class GoalFunction extends AbstractJiraFunctionProvider {
             throw new WorkflowException(jiraAuthenticationContext.getI18nHelper().getText("ru.mail.jira.plugins.contentprojects.issue.functions.emptyFieldsError"));
 
         try {
-            int goal = getGoal(AbstractFunctionFactory.getFilter(url), publishingDate, numberOfDays, counterConfig.getRatingId(), StringUtils.trimToEmpty(counterConfig.getRatingPassword()), goalFormat);
+            int goal = getGoal(AbstractFunctionFactory.getFilter(url), publishingDate, numberOfDays, counterConfig.getRatingId(), StringUtils.trimToEmpty(counterConfig.getRatingPassword()), goalFormat, goalParameter);
             issue.setCustomFieldValue(goalCf, (double) goal);
         } catch (Exception e) {
             if (!ignoreExceptions) {

@@ -2,6 +2,7 @@ $i18n.getText(
     "ru.mail.jira.plugins.contentprojects.issue.functions.goal.view",
     "<strong>$goalField</strong>",
     "<strong>$goalFormat</strong>",
+    "<strong>$goalParameter</strong>",
     "<strong>$counter</strong>"
 )
 $i18n.getText(

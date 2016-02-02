@@ -64,3 +64,17 @@
 </tr>
 #end
 
+#macro( goalParameter $id $value )
+<tr>
+    <td class="fieldLabelArea">
+        <label for="contentprojects-$id">$i18n.getText( "ru.mail.jira.plugins.contentprojects.issue.functions.goal.parameter" ):</label>
+    </td>
+    <td>
+        <select id="contentprojects-$id" name="$id">
+            <option value="total"#if( $value == "total" ) selected="selected"#end>$i18n.getText( "ru.mail.jira.plugins.contentprojects.issue.functions.goal.parameter.total" )</option>
+            <option value="total2"#if( $value == "total2" ) selected="selected"#end>$i18n.getText( "ru.mail.jira.plugins.contentprojects.issue.functions.goal.parameter.total2" )</option>
+        </select>
+    </td>
+</tr>
+#end
+
