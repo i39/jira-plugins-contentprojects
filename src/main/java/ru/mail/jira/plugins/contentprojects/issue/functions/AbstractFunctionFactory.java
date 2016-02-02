@@ -44,6 +44,7 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
     public static final String COUNTER = "counter";
     public static final String NUMBER_OF_DAYS = "numberOfDays";
     public static final String GOAL_FORMAT = "goalFormat";
+    public static final String GOAL_PARAMETER = "goalParameter";
     public static final String IGNORE_EXCEPTIONS = "ignoreExceptions";
 
     private final CounterManager counterManager;
@@ -114,6 +115,7 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         velocityParams.put(COUNTER, functionDescriptor.getArgs().get(COUNTER));
         velocityParams.put(NUMBER_OF_DAYS, functionDescriptor.getArgs().get(NUMBER_OF_DAYS));
         velocityParams.put(GOAL_FORMAT, functionDescriptor.getArgs().get(GOAL_FORMAT));
+        velocityParams.put(GOAL_PARAMETER, functionDescriptor.getArgs().get(GOAL_PARAMETER));
         velocityParams.put(IGNORE_EXCEPTIONS, functionDescriptor.getArgs().get(IGNORE_EXCEPTIONS));
     }
 
@@ -157,6 +159,7 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         velocityParams.put(GOAL_FIELD, getCounterName((String) velocityParams.get(GOAL_FIELD)));
         velocityParams.put(COUNTER, getCounterName((String) velocityParams.get(COUNTER)));
         velocityParams.put(GOAL_FORMAT, getCounterName((String) velocityParams.get(GOAL_FORMAT)));
+        velocityParams.put(GOAL_PARAMETER, getCounterName((String) velocityParams.get(GOAL_PARAMETER)));
         velocityParams.put(IGNORE_EXCEPTIONS, getCounterName((String) velocityParams.get(IGNORE_EXCEPTIONS)));
     }
 
@@ -203,6 +206,7 @@ public class AbstractFunctionFactory extends AbstractWorkflowPluginFactory imple
         addStringParam(descriptorParams, formParams, COUNTER);
         addIntegerParam(descriptorParams, formParams, NUMBER_OF_DAYS, 1, 30);
         addStringParam(descriptorParams, formParams, GOAL_FORMAT);
+        addStringParam(descriptorParams, formParams, GOAL_PARAMETER);
         addBooleanParam(descriptorParams, formParams, IGNORE_EXCEPTIONS);
         return descriptorParams;
     }
