@@ -37,7 +37,7 @@ public class Consts {
     public static final long HITS_SEARCH_ENGINES_OTHERS_CF_ID = 26207;
     public static final List<Long> SCROLL_CF_IDS = Arrays.asList(25700L, 25701L, 25702L, 25703L, 25704L);
     public static final long TOTAL_TIME_CF_ID = 27602;
-    public static final List<Long> TIME_INTERVAL_CF_IDS = Arrays.asList(27603L, 27604L, 27605L);
+    public static final List<Long> TIME_INTERVAL_CF_IDS = Arrays.asList(27603L, 27604L, 27605L, 31901L);
     public static final long ESTIMATED_TIME_CF_ID = 27700;
     public static final long COMMENTS_CF_ID = 25401;
     public static final long SHARE_RATIO_CF_ID = 27109;
@@ -47,6 +47,9 @@ public class Consts {
     public static final long ENGAGEMENT_RATE = 29901;
     public static final long ENGAGEMENT_RATE_TOUCH = 29902;
     public static final long IMAGES_NUMBER_CF_ID = 31400;
+    public static final long GOAL_RIGHT = 32409;
+    public static final long GOAL_BOTTOM = 32410;
+    public static final long GOAL_LEFT = 32411;
 
     public static final String NEWS_USER_NAME = "s.paranjko@mail.msk";
     public static final long NEWS_ISSUE_TYPE_ID = 13904;
