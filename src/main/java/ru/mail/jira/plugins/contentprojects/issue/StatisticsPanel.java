@@ -66,11 +66,11 @@ public class StatisticsPanel implements ContextProvider {
                 CommonUtils.getCustomField(Consts.SCROLL_TOUCH_CF_IDS.get(2)),
                 CommonUtils.getCustomField(Consts.SCROLL_TOUCH_CF_IDS.get(3)),
                 CommonUtils.getCustomField(Consts.SCROLL_TOUCH_CF_IDS.get(4)),
-                CommonUtils.getCustomField(Consts.ENGAGEMENT_RATE),
-                CommonUtils.getCustomField(Consts.ENGAGEMENT_RATE_TOUCH),
-                CommonUtils.getCustomField(Consts.GOAL_RIGHT),
-                CommonUtils.getCustomField(Consts.GOAL_BOTTOM),
-                CommonUtils.getCustomField(Consts.GOAL_LEFT)
+                CommonUtils.getCustomField(Consts.ENGAGEMENT_RATE_CF_ID),
+                CommonUtils.getCustomField(Consts.ENGAGEMENT_RATE_TOUCH_CF_ID),
+                CommonUtils.getCustomField(Consts.GOAL_RIGHT_CF_ID),
+                CommonUtils.getCustomField(Consts.GOAL_BOTTOM_CF_ID),
+                CommonUtils.getCustomField(Consts.GOAL_LEFT_CF_ID)
         );
         this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.searchService = searchService;

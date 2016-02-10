@@ -44,12 +44,12 @@ public class Consts {
     public static final long SOCIAL_ENGAGEMENT_CF_ID = 27103;
     public static final long HITS_TOUCH_CF_ID = 27903;
     public static final List<Long> SCROLL_TOUCH_CF_IDS = Arrays.asList(28000L, 28001L, 28002L, 28003L, 28004L);
-    public static final long ENGAGEMENT_RATE = 29901;
-    public static final long ENGAGEMENT_RATE_TOUCH = 29902;
+    public static final long ENGAGEMENT_RATE_CF_ID = 29901;
+    public static final long ENGAGEMENT_RATE_TOUCH_CF_ID = 29902;
     public static final long IMAGES_NUMBER_CF_ID = 31400;
-    public static final long GOAL_RIGHT = 32409;
-    public static final long GOAL_BOTTOM = 32410;
-    public static final long GOAL_LEFT = 32411;
+    public static final long GOAL_RIGHT_CF_ID = 32409;
+    public static final long GOAL_BOTTOM_CF_ID = 32410;
+    public static final long GOAL_LEFT_CF_ID = 32411;
 
     public static final String NEWS_USER_NAME = "s.paranjko@mail.msk";
     public static final long NEWS_ISSUE_TYPE_ID = 13904;
