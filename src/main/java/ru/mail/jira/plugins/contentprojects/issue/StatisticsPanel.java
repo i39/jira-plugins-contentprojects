@@ -134,10 +134,16 @@ public class StatisticsPanel implements ContextProvider {
             Date supremumDate = (Date) issue.getCustomFieldValue(CommonUtils.getCustomField(Consts.PUBLISHING_DATE_CF_ID));
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(supremumDate);
-            calendar.add(Calendar.DATE, -37);
+            calendar.add(Calendar.DATE, -30);
             Date infimumDate = calendar.getTime();
 
-            Query query = JqlQueryBuilder.newClauseBuilder().project(issue.getProjectObject().getId()).and().issueType(issue.getIssueTypeId()).and().status("11595").and().addDateRangeCondition(String.format("cf[%d]", Consts.PUBLISHING_DATE_CF_ID), infimumDate, supremumDate).buildQuery();
+            Query query = JqlQueryBuilder.newClauseBuilder()
+                                         .project(issue.getProjectObject().getId())
+                                         .and().issueType(issue.getIssueTypeId())
+                                         .and().status(Consts.STATUS_STATISTICS_COLLECTED)
+                                         .and().customField(Consts.PUBLISHING_DATE_CF_ID).gt(infimumDate)
+                                         .and().customField(Consts.PUBLISHING_DATE_CF_ID).ltEq(supremumDate)
+                                         .buildQuery();
             String jql = searchService.getJqlString(query);
             SearchService.ParseResult parseResult = searchService.parseQuery(jiraAuthenticationContext.getUser().getDirectoryUser(), jql);
             if (!parseResult.isValid())

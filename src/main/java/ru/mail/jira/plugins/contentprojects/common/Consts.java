@@ -6,7 +6,8 @@ public class Consts {
     public static final Collection<String> ACCOUNTANTS_GROUPS = Arrays.asList("cp-accountants", "cp-leads", "jira-administrators");
     public static final String AUTHORS_ROLE_NAME = "Developers";
     public static final Collection<Long> PROJECT_IDS = Arrays.asList(19070L, 19170L, 19270L, 19271L, 19272L, 19273L, 19274L, 21670L, 21671L, 23170L);
-    public static final Collection<String> STATUS_SPENT_IDS = Arrays.asList("11593", "11594", "11595");
+    public static final String STATUS_STATISTICS_COLLECTED = "11595";
+    public static final Collection<String> STATUS_SPENT_IDS = Arrays.asList("11593", "11594", STATUS_STATISTICS_COLLECTED);
     public static final Collection<String> STATUS_PLANNED_IDS = Arrays.asList("11395", "11592");
 
     public static final long PUBLISHING_DATE_CF_ID = 25102;
