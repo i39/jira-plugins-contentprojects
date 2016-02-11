@@ -3,10 +3,12 @@ package ru.mail.jira.plugins.contentprojects.issue;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.fields.CustomField;
+import com.atlassian.jira.jql.builder.JqlQueryBuilder;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.util.velocity.NumberTool;
 import com.atlassian.plugin.PluginParseException;
 import com.atlassian.plugin.web.ContextProvider;
+import com.atlassian.query.Query;
 import org.apache.log4j.Logger;
 import ru.mail.jira.plugins.commons.CommonUtils;
 import ru.mail.jira.plugins.contentprojects.common.Consts;
@@ -16,8 +18,6 @@ import ru.mail.jira.plugins.contentprojects.statistics.Statistic;
 import java.util.*;
 
 public class StatisticsPanel implements ContextProvider {
-    private static final String JQL = "project = %d AND issuetype = %s AND status = 11595 AND cf[%d] > \"-37d\"";
-
     private static final Logger log = Logger.getLogger(StatisticsPanel.class);
     private final List<CustomField> customFields;
     private final JiraAuthenticationContext jiraAuthenticationContext;
@@ -131,8 +131,20 @@ public class StatisticsPanel implements ContextProvider {
     public Map<String, Object> getContextMap(Map<String, Object> paramMap) {
         try {
             Issue issue = (Issue) paramMap.get("issue");
+            Date supremumDate = (Date) issue.getCustomFieldValue(CommonUtils.getCustomField(Consts.PUBLISHING_DATE_CF_ID));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(supremumDate);
+            calendar.add(Calendar.DATE, -30);
+            Date infimumDate = calendar.getTime();
 
-            String jql = String.format(JQL, issue.getProjectObject().getId(), issue.getIssueTypeId(), Consts.PUBLISHING_DATE_CF_ID);
+            Query query = JqlQueryBuilder.newClauseBuilder()
+                                         .project(issue.getProjectObject().getId())
+                                         .and().issueType(issue.getIssueTypeId())
+                                         .and().status(Consts.STATUS_STATISTICS_COLLECTED_ID)
+                                         .and().customField(Consts.PUBLISHING_DATE_CF_ID).gt(infimumDate)
+                                         .and().customField(Consts.PUBLISHING_DATE_CF_ID).ltEq(supremumDate)
+                                         .buildQuery();
+            String jql = searchService.getJqlString(query);
             SearchService.ParseResult parseResult = searchService.parseQuery(jiraAuthenticationContext.getUser().getDirectoryUser(), jql);
             if (!parseResult.isValid())
                 throw new Exception(String.format("Unable to parse JQL, %s", parseResult.getErrors()));
