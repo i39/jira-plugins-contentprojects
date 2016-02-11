@@ -140,7 +140,7 @@ public class StatisticsPanel implements ContextProvider {
             Query query = JqlQueryBuilder.newClauseBuilder()
                                          .project(issue.getProjectObject().getId())
                                          .and().issueType(issue.getIssueTypeId())
-                                         .and().status(Consts.STATUS_STATISTICS_COLLECTED)
+                                         .and().status(Consts.STATUS_STATISTICS_COLLECTED_ID)
                                          .and().customField(Consts.PUBLISHING_DATE_CF_ID).gt(infimumDate)
                                          .and().customField(Consts.PUBLISHING_DATE_CF_ID).ltEq(supremumDate)
                                          .buildQuery();
