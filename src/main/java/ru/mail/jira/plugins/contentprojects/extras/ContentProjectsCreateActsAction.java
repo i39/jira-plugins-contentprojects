@@ -223,8 +223,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 freelancer.getWorkNames(),
                 String.format(new Locale("ru"), "%.2f", collectedFreelancerData.totalCost),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
-                String.format(new Locale("ru"), "%02d", (int) (collectedFreelancerData.totalCost * 100 % 100)),
-                project.getName().substring(4)
+                String.format(new Locale("ru"), "%02d", (int) (collectedFreelancerData.totalCost * 100 % 100))
         ));
         return json;
     }
