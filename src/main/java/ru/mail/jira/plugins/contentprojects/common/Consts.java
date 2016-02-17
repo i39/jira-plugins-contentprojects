@@ -72,7 +72,7 @@ public class Consts {
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TEMPLATE_ID = 74;
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TEMPLATE_ID = 72;
     public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TEMPLATE_ID = 75;
-    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 80;
+    public static final long PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID = 83;
     public static final String PAYMENT_ACT_LINK_TYPE = "depends on";
 
     static {
