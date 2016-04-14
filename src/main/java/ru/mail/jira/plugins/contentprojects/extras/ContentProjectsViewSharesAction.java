@@ -13,6 +13,7 @@ public class ContentProjectsViewSharesAction extends JiraWebActionSupport {
     private String[] urls;
     private SharesOutput[] sharesArray;
 
+
     @Override
     public String doDefault() throws Exception {
         return INPUT;
@@ -55,15 +56,16 @@ public class ContentProjectsViewSharesAction extends JiraWebActionSupport {
 
     @SuppressWarnings("unused")
     public SharesOutput getSharesTotal() {
-        int[] sharesTotal = new int[5];
+        int[] sharesTotal = new int[6];
         for (SharesOutput shares : sharesArray) {
             sharesTotal[0] += shares.getFacebook();
-            sharesTotal[1] += shares.getMymail();
-            sharesTotal[2] += shares.getOdnoklassniki();
-            sharesTotal[3] += shares.getTwitter();
-            sharesTotal[4] += shares.getVkontakte();
+            sharesTotal[1] += shares.getFacebookWithLikes();
+            sharesTotal[2] += shares.getMymail();
+            sharesTotal[3] += shares.getOdnoklassniki();
+            sharesTotal[4] += shares.getTwitter();
+            sharesTotal[5] += shares.getVkontakte();
         }
-        return new SharesOutput(null, sharesTotal[0], sharesTotal[1], sharesTotal[2], sharesTotal[3], sharesTotal[4]);
+        return new SharesOutput(null, sharesTotal[0], sharesTotal[1], sharesTotal[2], sharesTotal[3], sharesTotal[4], sharesTotal[5]);
     }
 }
 

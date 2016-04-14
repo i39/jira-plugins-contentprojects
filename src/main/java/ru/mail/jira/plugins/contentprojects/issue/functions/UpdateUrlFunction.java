@@ -32,7 +32,7 @@ public class UpdateUrlFunction extends AbstractJiraFunctionProvider {
         InputStream inputStream = connection.getInputStream();
         try {
             URL redirectUrl = connection.getURL();
-            return redirectUrl.getQuery() != null ? redirectUrl.toString().replace(String.format("?%s", redirectUrl.getQuery()), "") : redirectUrl.toString();
+            return new URL(redirectUrl.getProtocol(), redirectUrl.getHost(), redirectUrl.getPort(), redirectUrl.getPath()).toString();
         } finally {
             try {
                 inputStream.close();
