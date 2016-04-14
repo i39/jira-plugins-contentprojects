@@ -50,6 +50,15 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         return result;
     }
 
+    private static int getLikesFacebook(String ... urls) throws Exception {
+        String response = new HttpSender("http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=%s", StringUtils.join(urls, ",")).sendGet();
+        JSONArray json = new JSONArray(response);
+        int result = 0;
+        for (int i = 0; i < json.length(); i++)
+            result += json.getJSONObject(i).getInt("like_count");
+        return result;
+    }
+
     private static int getSharesMymail(String ... urls) throws Exception {
         String response = new HttpSender("https://connect.mail.ru/share_count?url_list=%s", StringUtils.join(urls, ",")).sendGet();
         JSONObject json = new JSONObject(response);
@@ -153,11 +162,12 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
     public static int[] getShares(String url) throws Exception {
         String separator = url.contains("?") ? "&" : "?";
         int facebook = getSharesFacebook(url);
+        int facebookWithLikes = facebook + getLikesFacebook(url);
         int mymail = getSharesMymail(url, url + separator + "social=my");
         int odnoklassniki = getSharesOdnoklassniki(url) + getSharesOdnoklassniki(url + separator + "social=ok");
         int twitter = getSharesTwitter(url) + getSharesTwitter(url + separator + "social=tw");
         int vkontakte = getSharesVkontakte(url) + getSharesVkontakte(url + separator + "social=vk");
-        return new int[] { facebook, mymail, odnoklassniki, twitter, vkontakte };
+        return new int[] { facebook, facebookWithLikes, mymail, odnoklassniki, twitter, vkontakte };
     }
 
     @Override
@@ -178,10 +188,10 @@ public class SharesFunction extends AbstractJiraFunctionProvider {
         try {
             int[] shares = getShares(url);
             issue.setCustomFieldValue(facebookCf, (double) shares[0]);
-            issue.setCustomFieldValue(myMailCf, (double) shares[1]);
-            issue.setCustomFieldValue(odnoklassnikiCf, (double) shares[2]);
-            issue.setCustomFieldValue(twitterCf, (double) shares[3]);
-            issue.setCustomFieldValue(vkontakteCf, (double) shares[4]);
+            issue.setCustomFieldValue(myMailCf, (double) shares[2]);
+            issue.setCustomFieldValue(odnoklassnikiCf, (double) shares[3]);
+            issue.setCustomFieldValue(twitterCf, (double) shares[4]);
+            issue.setCustomFieldValue(vkontakteCf, (double) shares[5]);
         } catch (Exception e) {
             throw new WorkflowException(jiraAuthenticationContext.getI18nHelper().getText("ru.mail.jira.plugins.contentprojects.issue.functions.sharesError"), e);
         }

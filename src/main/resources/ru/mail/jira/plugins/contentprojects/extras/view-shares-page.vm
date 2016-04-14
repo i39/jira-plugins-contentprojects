@@ -31,6 +31,7 @@
                             <th>$i18n.getText( "common.concepts.url" )</th>
                             <th>$i18n.getText( "common.words.total" )</th>
                             <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.facebook" )</th>
+                            <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.extras.viewShares.facebookWithLikes" )</th>
                             <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.mymail" )</th>
                             <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.odnoklassniki" )</th>
                             <th>$i18n.getText( "ru.mail.jira.plugins.contentprojects.twitter" )</th>
@@ -43,6 +44,7 @@
                                 <td>$shares.url</td>
                                 <td class="total">$shares.total</td>
                                 <td>$shares.facebook</td>
+                                <td>$shares.facebookWithLikes</td>
                                 <td>$shares.mymail</td>
                                 <td>$shares.odnoklassniki</td>
                                 <td>$shares.twitter</td>
@@ -56,6 +58,7 @@
                             <td class="total-title">$i18n.getText( "common.words.grandtotal" )</td>
                             <td class="total">$total.total</td>
                             <td class="total">$total.facebook</td>
+                            <td class="total">$total.facebookWithLikes</td>
                             <td class="total">$total.mymail</td>
                             <td class="total">$total.odnoklassniki</td>
                             <td class="total">$total.twitter</td>

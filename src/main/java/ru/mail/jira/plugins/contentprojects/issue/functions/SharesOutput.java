@@ -12,6 +12,8 @@ public class SharesOutput {
     @XmlElement
     private int facebook;
     @XmlElement
+    private int facebookWithLikes;
+    @XmlElement
     private int mymail;
     @XmlElement
     private int odnoklassniki;
@@ -26,13 +28,14 @@ public class SharesOutput {
      */
     @Deprecated
     public SharesOutput(String url, int[] shares) {
-        this(url, shares[0], shares[1], shares[2], shares[3], shares[4]);
+        this(url, shares[0], shares[1], shares[2], shares[3], shares[4], shares[5]);
     }
 
-    public SharesOutput(String url, int facebook, int mymail, int ok, int twitter, int vkontakte) {
+    public SharesOutput(String url, int facebook, int facebookWithLikes, int mymail, int ok, int twitter, int vkontakte) {
         this.url = url;
         this.total = facebook + mymail + ok + twitter + vkontakte;
         this.facebook = facebook;
+        this.facebookWithLikes = facebookWithLikes;
         this.mymail = mymail;
         this.odnoklassniki = ok;
         this.twitter = twitter;
@@ -61,6 +64,14 @@ public class SharesOutput {
 
     public void setFacebook(int facebook) {
         this.facebook = facebook;
+    }
+
+    public int getFacebookWithLikes() {
+        return facebookWithLikes;
+    }
+
+    public void setFacebookWithLikes(int facebookWithLikes) {
+        this.facebookWithLikes = facebookWithLikes;
     }
 
     public int getMymail() {

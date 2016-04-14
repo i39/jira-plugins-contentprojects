@@ -31,7 +31,8 @@ public class UpdateUrlFunction extends AbstractJiraFunctionProvider {
         connection.connect();
         InputStream inputStream = connection.getInputStream();
         try {
-            return connection.getURL().toString();
+            URL redirectUrl = connection.getURL();
+            return new URL(redirectUrl.getProtocol(), redirectUrl.getHost(), redirectUrl.getPort(), redirectUrl.getPath()).toString();
         } finally {
             try {
                 inputStream.close();
