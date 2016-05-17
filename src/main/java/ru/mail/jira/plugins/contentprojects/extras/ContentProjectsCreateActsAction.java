@@ -167,11 +167,11 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         final DateFormat DATE_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("dd MMMM yyyy"), LocalUtils.MONTH_NAMES_GENITIVE);
 
         String workNames;
-        if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID))
+        if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID.equals(contractTypeId))
             workNames = StringUtils.join(collectedFreelancerData.issueSummaries, "\n");
-        else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID))
+        else if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID.equals(contractTypeId))
             workNames = StringUtils.join(collectedFreelancerData.issueDescriptions, "\n");
-        else if (contractTypeId.equals(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID))
+        else if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID.equals(contractTypeId))
             workNames = freelancer.getWorkNames();
         else
             throw new Exception(String.format("Contract Type with id = %s is not suitable for this act.", contractTypeId));
