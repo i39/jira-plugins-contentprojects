@@ -131,7 +131,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         Collection<String> issueSummaries = new ArrayList<String>();
         Collection<String> issueDescriptions = new ArrayList<String>();
         Collection<String> requirements = new ArrayList<String>();
-        Collection<String> emails = new ArrayList<String>();
+        Collection<String> emails = new HashSet<String>();
         double totalCost = 0;
     }
 
@@ -167,12 +167,10 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         final DateFormat DATE_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("dd MMMM yyyy"), LocalUtils.MONTH_NAMES_GENITIVE);
 
         String workNames;
-        if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID.equals(contractTypeId))
+        if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_ARTICLE_TYPE_ID.equals(contractTypeId) || Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID.equals(contractTypeId))
             workNames = StringUtils.join(collectedFreelancerData.issueSummaries, "\n");
         else if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_IMAGE_TYPE_ID.equals(contractTypeId))
             workNames = StringUtils.join(collectedFreelancerData.issueDescriptions, "\n");
-        else if (Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CUSTOM_ORDER_TYPE_ID.equals(contractTypeId))
-            workNames = freelancer.getWorkNames();
         else
             throw new Exception(String.format("Contract Type with id = %s is not suitable for this act.", contractTypeId));
 
@@ -186,7 +184,7 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
                 project.getName().substring(4),
                 workNames,
-                String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
+                String.format(new Locale("ru"), "%.2f", collectedFreelancerData.totalCost),
                 DATE_FORMAT.format(paymentActDate.getTime()),
                 StringUtils.join(collectedFreelancerData.requirements, "; "),
                 StringUtils.join(collectedFreelancerData.emails, ", "),
