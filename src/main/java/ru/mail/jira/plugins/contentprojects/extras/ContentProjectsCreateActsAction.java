@@ -139,6 +139,10 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         final DateFormat DAY_OF_THE_MONTH_FORMAT = new SimpleDateFormat("dd");
         final DateFormat MONTH_FORMAT = LocalUtils.updateMonthNames(new SimpleDateFormat("MMMM"), LocalUtils.MONTH_NAMES_GENITIVE);
         final DateFormat YEAR_FORMAT = new SimpleDateFormat("yy");
+
+        String freelancerName = StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName();
+        List<String> freelancerFIO = Arrays.asList(freelancerName.split("\\s+"));
+
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_CONTRACTOR_TEMPLATE_ID));
         json.put("variableValues", Arrays.asList(
@@ -148,14 +152,15 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 DAY_OF_THE_MONTH_FORMAT.format(paymentAnnexDate.getTime()),
                 MONTH_FORMAT.format(paymentAnnexDate.getTime()),
                 YEAR_FORMAT.format(paymentAnnexDate.getTime()),
-                StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName(),
+                freelancerName,
                 DAY_OF_THE_MONTH_FORMAT.format(paymentActDate.getTime()),
                 MONTH_FORMAT.format(paymentActDate.getTime()),
                 YEAR_FORMAT.format(paymentActDate.getTime()),
                 freelancer.getWorkNames(),
                 String.format(new Locale("ru"), "%.2f", collectedFreelancerData.totalCost),
                 String.format(new Locale("ru"), "%,d", (int) collectedFreelancerData.totalCost),
-                String.format(new Locale("ru"), "%02d", (int) (collectedFreelancerData.totalCost * 100 % 100))
+                String.format(new Locale("ru"), "%02d", (int) (collectedFreelancerData.totalCost * 100 % 100)),
+                String.format("%s %s.%s.", freelancerFIO.get(0), freelancerFIO.get(1).charAt(0), freelancerFIO.get(2).charAt(0))
         ));
         return json;
     }
@@ -174,6 +179,9 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
         else
             throw new Exception(String.format("Contract Type with id = %s is not suitable for this act.", contractTypeId));
 
+        String freelancerName = StringUtils.isNotEmpty(freelancer.getPayeeName()) ? freelancer.getPayeeName() : freelancer.getFullName();
+        List<String> freelancerFIO = Arrays.asList(freelancerName.split("\\s+"));
+
         JSONObject json = new JSONObject();
         json.put("templateIds", Collections.<Object>singleton(Consts.PAYMENT_ACT_TYPICAL_CONTRACTS_STANDARD_ACT_TEMPLATE_ID));
         json.put("variableValues", Arrays.asList(
@@ -188,7 +196,8 @@ public class ContentProjectsCreateActsAction extends JiraWebActionSupport {
                 DATE_FORMAT.format(paymentActDate.getTime()),
                 StringUtils.join(collectedFreelancerData.requirements, "; "),
                 StringUtils.join(collectedFreelancerData.emails, ", "),
-                LocalUtils.numberToCaption((int) collectedFreelancerData.totalCost)
+                LocalUtils.numberToCaption((int) collectedFreelancerData.totalCost),
+                String.format("%s %s.%s.", freelancerFIO.get(0), freelancerFIO.get(1).charAt(0), freelancerFIO.get(2).charAt(0))
         ));
         return json;
     }
